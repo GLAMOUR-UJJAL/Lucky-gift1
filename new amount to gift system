@@ -21,35 +21,40 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            /* MOBILE REFRESH PREVENTION: Disables native pull-to-refresh and glow actions */
             overscroll-behavior-y: contain;
             overscroll-behavior: none;
         }
 
         .container {
             text-align: center;
-            padding: 20px;
+            padding: 16px;
             z-index: 2;
+            width: 100%;
+            max-width: 460px;
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 1.8rem;
+            margin-bottom: 6px;
             background: linear-gradient(45deg, #ff416c, #ff4b2b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(255, 65, 108, 0.3);
+            text-shadow: 0 0 25px rgba(255, 65, 108, 0.3);
         }
 
         p.subtitle {
             color: #8a8dbe;
-            margin-bottom: 25px;
-            font-size: 1.1rem;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Bill Input Section */
         .bill-input-card {
-            margin-bottom: 30px;
+            margin-bottom: 18px;
             display: flex;
             justify-content: center;
             gap: 10px;
@@ -59,23 +64,23 @@
             background: #25283d;
             border: 1px solid #414568;
             color: #fff;
-            padding: 10px 15px;
+            padding: 10px 14px;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
-            width: 180px;
+            width: 160px;
         }
 
         .bill-input-card button {
             background: linear-gradient(45deg, #ff416c, #ff4b2b);
             border: none;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 18px;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s ease, opacity 0.2s ease;
+            transition: transform 0.2s ease;
         }
 
         .bill-input-card button:hover {
@@ -83,37 +88,46 @@
         }
 
         /* ==================== TREASURE CHEST DESIGN & ANIMATION ==================== */
-        .gift-container {
-            position: relative;
-            width: 220px;
-            height: 200px;
-            margin: 0 auto;
-            cursor: pointer;
-            perspective: 900px;
-            -webkit-tap-highlight-color: transparent;
+        .chest-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
-        /* Ambient ground shadow */
+        .chest-stage.hide {
+            display: none;
+        }
+
+        .gift-container {
+            position: relative;
+            width: 180px;
+            height: 160px;
+            margin: 0 auto;
+            cursor: pointer;
+            perspective: 800px;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+
         .gift-container::after {
             content: '';
             position: absolute;
             bottom: 2px;
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
-            height: 26px;
+            width: 160px;
+            height: 22px;
             background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(212, 175, 55, 0.2) 40%, transparent 75%);
             border-radius: 50%;
             z-index: 1;
-            transition: all 0.4s ease;
         }
 
-        /* Chest Base / Body */
         .gift-box {
             position: relative;
-            width: 190px;
-            height: 110px;
-            margin: 65px auto 0 auto;
+            width: 160px;
+            height: 90px;
+            margin: 55px auto 0 auto;
             background: repeating-linear-gradient(
                 180deg,
                 #6e3a17 0px,
@@ -122,14 +136,61 @@
             );
             border-radius: 0 0 12px 12px;
             border: 3px solid #2b1305;
-            box-shadow: inset 0 -10px 25px rgba(0, 0, 0, 0.7), 0 16px 30px rgba(0, 0, 0, 0.6);
+            box-shadow: inset 0 -10px 25px rgba(0, 0, 0, 0.7), 0 14px 26px rgba(0, 0, 0, 0.6);
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             z-index: 2;
-            overflow: visible;
         }
 
-        /* Brass Iron Straps & Rivets on Chest Body */
         .gift-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 18px;
+            width: 16px;
+            height: 100%;
+            background: linear-gradient(90deg, #8a6a1c, #ffd700 50%, #94721d);
+            border-left: 2px solid #3d2a03;
+            border-right: 2px solid #3d2a03;
+            box-shadow: 92px 0 0 0 #ffd700, 90px 0 0 2px #3d2a03;
+        }
+
+        .gift-box::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 32px;
+            background: radial-gradient(circle at 50% 30%, #fff2a3 0%, #d4af37 60%, #856404 100%);
+            border: 2px solid #382500;
+            border-radius: 6px 6px 14px 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.6);
+            z-index: 5;
+        }
+
+        .gift-lid {
+            position: absolute;
+            top: 15px;
+            left: 5px;
+            width: 170px;
+            height: 48px;
+            background: repeating-linear-gradient(
+                180deg,
+                #85451c 0px,
+                #5e2d0e 16px,
+                #3a1a06 18px
+            );
+            border-radius: 34px 34px 6px 6px;
+            border: 3px solid #2b1305;
+            box-shadow: inset 0 6px 15px rgba(255, 255, 255, 0.2), 0 8px 18px rgba(0, 0, 0, 0.5);
+            z-index: 4;
+            transform-origin: center top;
+            transition: transform 0.8s cubic-bezier(0.2, 0.85, 0.3, 1.25);
+            transform-style: preserve-3d;
+        }
+
+        .gift-lid::before {
             content: '';
             position: absolute;
             top: 0;
@@ -139,87 +200,24 @@
             background: linear-gradient(90deg, #8a6a1c, #ffd700 50%, #94721d);
             border-left: 2px solid #3d2a03;
             border-right: 2px solid #3d2a03;
-            box-shadow: 112px 0 0 0 #ffd700, 110px 0 0 2px #3d2a03;
+            border-radius: 18px 18px 0 0;
+            box-shadow: 94px 0 0 0 #ffd700, 92px 0 0 2px #3d2a03;
         }
 
-        /* Gold Keyhole Lock Plate */
-        .gift-box::after {
+        .gift-lid::after {
             content: '';
             position: absolute;
             top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 32px;
-            height: 38px;
-            background: radial-gradient(circle at 50% 30%, #fff2a3 0%, #d4af37 60%, #856404 100%);
-            border: 2px solid #382500;
-            border-radius: 6px 6px 14px 14px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.6);
-            z-index: 5;
-        }
-
-        /* Treasure Chest Curved Lid */
-        .gift-lid {
-            position: absolute;
-            top: 15px;
-            left: 10px;
-            width: 200px;
-            height: 55px;
-            background: repeating-linear-gradient(
-                180deg,
-                #85451c 0px,
-                #5e2d0e 16px,
-                #3a1a06 18px
-            );
-            border-radius: 40px 40px 6px 6px;
-            border: 3px solid #2b1305;
-            box-shadow: inset 0 6px 15px rgba(255, 255, 255, 0.2), 0 8px 18px rgba(0, 0, 0, 0.5);
-            z-index: 4;
-            transform-origin: center top;
-            transition: transform 0.8s cubic-bezier(0.2, 0.85, 0.3, 1.25);
-            transform-style: preserve-3d;
-        }
-
-        /* Brass Straps on Lid */
-        .gift-lid::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 25px;
-            width: 20px;
-            height: 100%;
-            background: linear-gradient(90deg, #8a6a1c, #ffd700 50%, #94721d);
-            border-left: 2px solid #3d2a03;
-            border-right: 2px solid #3d2a03;
-            border-radius: 20px 20px 0 0;
-            box-shadow: 110px 0 0 0 #ffd700, 108px 0 0 2px #3d2a03;
-        }
-
-        /* Top Handle Ring */
-        .gift-lid::after {
-            content: '';
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 38px;
-            height: 16px;
-            border: 4px solid #d4af37;
+            width: 30px;
+            height: 14px;
+            border: 3px solid #d4af37;
             border-bottom: none;
-            border-radius: 12px 12px 0 0;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
         }
 
-        /* Hover Feedback */
-        .gift-container:hover .gift-box {
-            transform: translateY(-2px);
-        }
-
-        .gift-container:hover .gift-lid {
-            transform: translateY(-4px);
-        }
-
-        /* Chest Shake / Unlocking Animation */
         .gift-container.shake .gift-box {
             animation: chestRattle 0.4s ease-in-out infinite;
         }
@@ -228,95 +226,138 @@
             animation: lidRattle 0.4s ease-in-out infinite;
         }
 
-        /* Chest 3D Open Flip Animation */
         .gift-container.opened .gift-lid {
-            transform: translateY(-15px) rotateX(-115deg);
+            transform: translateY(-12px) rotateX(-115deg);
         }
 
-        /* Glowing treasure burst emerging from opened chest */
         .gift-container.opened .gift-box {
             box-shadow: inset 0 20px 35px #ffe600, 0 15px 40px rgba(255, 215, 0, 0.6);
         }
 
         @keyframes chestRattle {
             0%, 100% { transform: translateX(0) rotate(0deg); }
-            20% { transform: translateX(-6px) rotate(-1.5deg); }
-            40% { transform: translateX(6px) rotate(1.5deg); }
-            60% { transform: translateX(-4px) rotate(-1deg); }
-            80% { transform: translateX(4px) rotate(1deg); }
+            20% { transform: translateX(-5px) rotate(-1.5deg); }
+            40% { transform: translateX(5px) rotate(1.5deg); }
+            60% { transform: translateX(-3px) rotate(-1deg); }
+            80% { transform: translateX(3px) rotate(1deg); }
         }
 
         @keyframes lidRattle {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            30% { transform: translateY(-5px) rotate(-2deg); }
-            70% { transform: translateY(-3px) rotate(2deg); }
+            30% { transform: translateY(-4px) rotate(-2deg); }
+            70% { transform: translateY(-2px) rotate(2deg); }
         }
-        /* ========================================================================= */
 
-        /* Reveal Section */
-        .reveal-card {
-            margin-top: 35px;
+        /* Single Live Gift Reveal */
+        .single-reveal {
+            margin-top: 14px;
             opacity: 0;
-            transform: translateY(20px) scale(0.9);
-            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            transform: translateY(10px) scale(0.9);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             pointer-events: none;
+            min-height: 52px;
         }
 
-        .reveal-card.show {
+        .single-reveal.show {
             opacity: 1;
             transform: translateY(0) scale(1);
-            pointer-events: auto;
         }
 
-        .prize-title {
-            font-size: 1.15rem;
-            color: #00ffd0;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            margin-bottom: 15px;
-            text-shadow: 0 0 15px rgba(0, 255, 208, 0.5);
-        }
-
-        .prize-name {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .prize-item {
+        .current-prize-pill {
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-            border: 1px solid rgba(255, 215, 0, 0.35);
-            padding: 10px 22px;
-            border-radius: 40px;
-            font-size: 1.5rem;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 1.15rem;
             font-weight: 800;
-            color: #ffffff;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 0 15px rgba(255, 215, 0, 0.1);
-            backdrop-filter: blur(10px);
-            animation: popIn 0.4s ease forwards;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 12px rgba(255, 215, 0, 0.15);
         }
 
-        .prize-badge {
+        .badge-current {
             background: linear-gradient(45deg, #ffd700, #ff9900);
             color: #201400;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 900;
-            padding: 4px 10px;
-            border-radius: 20px;
+            padding: 3px 8px;
+            border-radius: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+        }
+
+        /* ==================== FINAL ALL-GIFTS SUMMARY (NO SCROLL GRID) ==================== */
+        .summary-card {
+            display: none;
+            opacity: 0;
+            transform: scale(0.92);
+            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: 16px;
+            padding: 16px 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .summary-card.show {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .summary-title {
+            font-size: 1.1rem;
+            color: #00ffd0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 12px rgba(0, 255, 208, 0.5);
+        }
+
+        /* 2-column compact grid fitting up to 10+ prizes without page scrolling */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 6px 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: left;
+            animation: popIn 0.3s ease forwards;
+        }
+
+        .summary-badge {
+            background: linear-gradient(45deg, #ffd700, #ff9900);
+            color: #201400;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 2px 5px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .summary-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #ffffff;
         }
 
         @keyframes popIn {
-            0% { transform: scale(0.7); opacity: 0; }
+            0% { transform: scale(0.85); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* Disabled State styling */
         .disabled {
             cursor: not-allowed !important;
             opacity: 0.6;
@@ -326,28 +367,35 @@
 <body>
 
     <div class="container">
-        <h1>GLAMOUR REWARD SYSTEM</h1>
+        <h1>GLAMOUR REWARDS</h1>
         <p class="subtitle" id="status-text">Enter bill amount to unlock gifts (1 Gift per ₹1000)</p>
 
         <!-- Bill Amount Input -->
         <div class="bill-input-card" id="billInputSection">
-            <input type="number" id="billAmount" placeholder="Enter Bill Amount (₹)" min="0">
+            <input type="number" id="billAmount" placeholder="Enter Bill (₹)" min="0">
             <button onclick="setBillAmount()">Submit Bill</button>
         </div>
 
-        <div class="gift-container" id="giftContainer" onclick="openGift()">
-            <div class="gift-lid" id="giftLid"></div>
-            <div class="gift-box"></div>
+        <!-- Single Chest Stage -->
+        <div class="chest-stage" id="chestStage">
+            <div class="gift-container" id="giftContainer" onclick="openGift()">
+                <div class="gift-lid" id="giftLid"></div>
+                <div class="gift-box"></div>
+            </div>
+
+            <div class="single-reveal" id="singleReveal">
+                <div class="current-prize-pill" id="currentPrizeContent"></div>
+            </div>
         </div>
 
-        <div class="reveal-card" id="revealCard">
-            <p class="prize-title" id="prizeTitle">🎉 Congratulations! You Won 🎉</p>
-            <div class="prize-name" id="prizeName">...</div>
+        <!-- Final Summary View (Reveals after ALL gifts are opened) -->
+        <div class="summary-card" id="summaryCard">
+            <p class="summary-title">🎉 All Won Rewards 🎉</p>
+            <div class="summary-grid" id="summaryGrid"></div>
         </div>
     </div>
 
     <script>
-        // Weighted items based on your configuration
         const defaultGifts = [
             { name: "MAGIC LED BULB", weight: 20 },
             { name: "WATER BOTTLE",   weight: 20 },
@@ -362,7 +410,6 @@
             { name: "FAN",           weight:  0 }
         ];
 
-        // Specific items that can only ever appear once per bill session
         const oneTimeItems = ["WALL CLOCK", "CUP SET", "LADIES BAG", "FAN"];
 
         let currentGiftPool = [];
@@ -371,7 +418,6 @@
         let wonGiftsList = [];
         let isOpening = false;
 
-        // Bill Amount Handler
         function setBillAmount() {
             const billInput = document.getElementById('billAmount');
             const amount = parseFloat(billInput.value);
@@ -386,62 +432,39 @@
             giftsRevealedCount = 0;
             wonGiftsList = [];
 
-            // Clone pool from default configuration
             currentGiftPool = JSON.parse(JSON.stringify(defaultGifts));
 
-            // Adjust WALL CLOCK weight: 3% if bill is 1000 to 2999
             const clockRef = currentGiftPool.find(g => g.name === "WALL CLOCK");
             if (clockRef) {
-                if (amount >= 1000 && amount <= 2999) {
-                    clockRef.weight = 3;
-                } else {
-                    clockRef.weight = 8;
-                }
+                clockRef.weight = (amount >= 1000 && amount <= 2999) ? 3 : 8;
             }
 
-            // Lock bill inputs
             document.getElementById('billInputSection').style.display = 'none';
-
-            statusText.textContent = `You earned ${totalEligibleGifts} mystery gift(s)! Tap the treasure chest to reveal Gift #1.`;
+            statusText.textContent = `Unlocked ${totalEligibleGifts} gift(s)! Tap chest for Gift #1.`;
             document.getElementById('giftContainer').classList.remove('disabled');
         }
 
-        // 1. DESKTOP NO REFRESH PROTECTION BLOCK
         window.addEventListener('beforeunload', function (e) {
             e.preventDefault();
-            e.returnValue = 'Are you sure you want to leave? Your reward state will be lost.';
+            e.returnValue = 'Reward state will be lost.';
         });
 
         window.addEventListener('keydown', function (e) {
-            if (
-                e.key === 'F5' || 
-                (e.ctrlKey && e.key === 'r') || 
-                (e.metaKey && e.key === 'r')
-            ) {
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r') || (e.metaKey && e.key === 'r')) {
                 e.preventDefault();
-                alert("Action Denied: Page refreshing is locked on this gift window.");
             }
         });
 
-        // 1b. MOBILE SPECIFIC REFRESH PREVENTION
         let touchStartClientY = 0;
-
         window.addEventListener('touchstart', function (e) {
-            if (e.touches.length === 1) {
-                touchStartClientY = e.touches[0].clientY;
-            }
+            if (e.touches.length === 1) touchStartClientY = e.touches[0].clientY;
         }, { passive: false });
 
         window.addEventListener('touchmove', function (e) {
-            const touchMoveClientY = e.touches[0].clientY;
-            const touchDistanceY = touchMoveClientY - touchStartClientY;
-
-            if (document.documentElement.scrollTop === 0 && touchDistanceY > 0) {
-                e.preventDefault();
-            }
+            const touchDistanceY = e.touches[0].clientY - touchStartClientY;
+            if (window.scrollY === 0 && touchDistanceY > 0) e.preventDefault();
         }, { passive: false });
 
-        // 2. WEIGHTED RANDOMIZER ENGINE (WITH ONE-TIME RESTRICTION)
         function getWeightedGift() {
             const totalWeight = currentGiftPool.reduce((sum, item) => sum + item.weight, 0);
             let selectedItemName = defaultGifts[0].name;
@@ -460,18 +483,14 @@
                 }
             }
 
-            // If selected item is a one-time item, disable it for remaining picks
             if (oneTimeItems.includes(selectedItemName)) {
                 const itemRef = currentGiftPool.find(g => g.name === selectedItemName);
-                if (itemRef) {
-                    itemRef.weight = 0;
-                }
+                if (itemRef) itemRef.weight = 0;
             }
 
             return selectedItemName;
         }
 
-        // 3. REVEAL SYSTEM
         function openGift() {
             if (totalEligibleGifts === 0) {
                 alert("Please enter a valid bill amount first!");
@@ -483,12 +502,11 @@
 
             const container = document.getElementById('giftContainer');
             const statusText = document.getElementById('status-text');
-            const revealCard = document.getElementById('revealCard');
-            const prizeNameText = document.getElementById('prizeName');
+            const singleReveal = document.getElementById('singleReveal');
+            const currentPrizeContent = document.getElementById('currentPrizeContent');
 
-            // Reset box animation states
             container.classList.remove('opened');
-            revealCard.classList.remove('show');
+            singleReveal.classList.remove('show');
 
             container.classList.add('shake');
             statusText.textContent = `Unlocking chest ${giftsRevealedCount + 1} of ${totalEligibleGifts}...`;
@@ -496,28 +514,42 @@
             setTimeout(() => {
                 container.classList.remove('shake');
                 container.classList.add('opened');
-                
+
                 const winningPrize = getWeightedGift();
                 giftsRevealedCount++;
                 wonGiftsList.push(winningPrize);
-                
-                prizeNameText.innerHTML = wonGiftsList.map((item, idx) => `
-                    <div class="prize-item">
-                        <span class="prize-badge">Gift #${idx + 1}</span>
-                        <span>${item}</span>
-                    </div>
-                `).join('');
-                revealCard.classList.add('show');
+
+                // Show only the latest prize under the chest
+                currentPrizeContent.innerHTML = `
+                    <span class="badge-current">Gift #${giftsRevealedCount}</span>
+                    <span>${winningPrize}</span>
+                `;
+                singleReveal.classList.add('show');
 
                 if (giftsRevealedCount < totalEligibleGifts) {
-                    statusText.textContent = `Unlocked Gift ${giftsRevealedCount}! Click the treasure chest again for Gift #${giftsRevealedCount + 1}.`;
+                    statusText.textContent = `Claimed Gift #${giftsRevealedCount}! Tap chest again for #${giftsRevealedCount + 1}.`;
                     isOpening = false;
                 } else {
-                    statusText.textContent = "All rewards unlocked from the chest!";
-                    container.classList.add('disabled');
+                    statusText.textContent = "All gifts revealed! Here is your complete summary:";
                     isOpening = false;
+
+                    // After 1.2s delay, swap out chest and reveal full 2-column no-scroll grid
+                    setTimeout(() => {
+                        document.getElementById('chestStage').classList.add('hide');
+                        const summaryCard = document.getElementById('summaryCard');
+                        const summaryGrid = document.getElementById('summaryGrid');
+
+                        summaryGrid.innerHTML = wonGiftsList.map((item, idx) => `
+                            <div class="summary-item">
+                                <span class="summary-badge">#${idx + 1}</span>
+                                <span class="summary-name">${item}</span>
+                            </div>
+                        `).join('');
+
+                        summaryCard.classList.add('show');
+                    }, 1200);
                 }
-            }, 1200); 
+            }, 1100);
         }
     </script>
 </body>
