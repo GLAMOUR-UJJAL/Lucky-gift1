@@ -315,7 +315,6 @@
             text-shadow: 0 0 12px rgba(0, 255, 208, 0.5);
         }
 
-        /* 2-column compact grid fitting up to 10+ prizes without page scrolling */
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -432,11 +431,24 @@
             giftsRevealedCount = 0;
             wonGiftsList = [];
 
-            currentGiftPool = JSON.parse(JSON.stringify(defaultGifts));
+            // Tiered pool selection based on bill amount
+            if (amount >= 1000 && amount <= 1700) {
+                // Restricted pool: only UMBRELLA, WATER BOTTLE, and TRAY (with TRAY at 1%)
+                // Weights: UMBRELLA (45%), WATER BOTTLE (45%), TRAY (10%)
+                currentGiftPool = [
+                    { name: "UMBRELLA",     weight: 45 },
+                    { name: "WATER BOTTLE", weight: 45 },
+                    { name: "TRAY",         weight: 10 }
+                ];
+            } else {
+                // Standard pool for bills above 1700
+                currentGiftPool = JSON.parse(JSON.stringify(defaultGifts));
 
-            const clockRef = currentGiftPool.find(g => g.name === "WALL CLOCK");
-            if (clockRef) {
-                clockRef.weight = (amount >= 1000 && amount <= 2999) ? 3 : 8;
+                // 3% clock rate between 1701 and 2999; 8% from 3000+
+                const clockRef = currentGiftPool.find(g => g.name === "WALL CLOCK");
+                if (clockRef) {
+                    clockRef.weight = (amount <= 2999) ? 3 : 8;
+                }
             }
 
             document.getElementById('billInputSection').style.display = 'none';
@@ -467,10 +479,10 @@
 
         function getWeightedGift() {
             const totalWeight = currentGiftPool.reduce((sum, item) => sum + item.weight, 0);
-            let selectedItemName = defaultGifts[0].name;
+            let selectedItemName = currentGiftPool[0].name;
 
             if (totalWeight <= 0) {
-                const fallbackGifts = ["MAGIC LED BULB", "WATER BOTTLE", "TRAY"];
+                const fallbackGifts = ["WATER BOTTLE", "UMBRELLA"];
                 selectedItemName = fallbackGifts[Math.floor(Math.random() * fallbackGifts.length)];
             } else {
                 let random = Math.random() * totalWeight;
@@ -519,7 +531,6 @@
                 giftsRevealedCount++;
                 wonGiftsList.push(winningPrize);
 
-                // Show only the latest prize under the chest
                 currentPrizeContent.innerHTML = `
                     <span class="badge-current">Gift #${giftsRevealedCount}</span>
                     <span>${winningPrize}</span>
@@ -533,7 +544,6 @@
                     statusText.textContent = "All gifts revealed! Here is your complete summary:";
                     isOpening = false;
 
-                    // After 1.2s delay, swap out chest and reveal full 2-column no-scroll grid
                     setTimeout(() => {
                         document.getElementById('chestStage').classList.add('hide');
                         const summaryCard = document.getElementById('summaryCard');
