@@ -19,22 +19,25 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            /* MOBILE REFRESH PREVENTION: Disables native pull-to-refresh and glow actions */
+            justify-content: flex-start;
+            overflow-x: hidden;
+            overflow-y: auto;
             overscroll-behavior-y: contain;
             overscroll-behavior: none;
         }
 
         .container {
             text-align: center;
-            padding: 20px;
+            padding: 24px 16px 40px;
             z-index: 2;
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            margin-bottom: 8px;
             background: linear-gradient(45deg, #ff416c, #ff4b2b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -43,13 +46,17 @@
 
         p.subtitle {
             color: #8a8dbe;
-            margin-bottom: 25px;
-            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Bill Input Section */
         .bill-input-card {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             display: flex;
             justify-content: center;
             gap: 10px;
@@ -59,20 +66,20 @@
             background: #25283d;
             border: 1px solid #414568;
             color: #fff;
-            padding: 10px 15px;
+            padding: 10px 14px;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
-            width: 180px;
+            width: 160px;
         }
 
         .bill-input-card button {
             background: linear-gradient(45deg, #ff416c, #ff4b2b);
             border: none;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 18px;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s ease, opacity 0.2s ease;
@@ -85,12 +92,13 @@
         /* ==================== TREASURE CHEST DESIGN & ANIMATION ==================== */
         .gift-container {
             position: relative;
-            width: 220px;
-            height: 200px;
+            width: 200px;
+            height: 180px;
             margin: 0 auto;
             cursor: pointer;
             perspective: 900px;
             -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
         }
 
         /* Ambient ground shadow */
@@ -100,8 +108,8 @@
             bottom: 2px;
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
-            height: 26px;
+            width: 180px;
+            height: 24px;
             background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(212, 175, 55, 0.2) 40%, transparent 75%);
             border-radius: 50%;
             z-index: 1;
@@ -111,9 +119,9 @@
         /* Chest Base / Body */
         .gift-box {
             position: relative;
-            width: 190px;
-            height: 110px;
-            margin: 65px auto 0 auto;
+            width: 170px;
+            height: 100px;
+            margin: 60px auto 0 auto;
             background: repeating-linear-gradient(
                 180deg,
                 #6e3a17 0px,
@@ -133,13 +141,13 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 20px;
-            width: 18px;
+            left: 18px;
+            width: 16px;
             height: 100%;
             background: linear-gradient(90deg, #8a6a1c, #ffd700 50%, #94721d);
             border-left: 2px solid #3d2a03;
             border-right: 2px solid #3d2a03;
-            box-shadow: 112px 0 0 0 #ffd700, 110px 0 0 2px #3d2a03;
+            box-shadow: 102px 0 0 0 #ffd700, 100px 0 0 2px #3d2a03;
         }
 
         /* Gold Keyhole Lock Plate */
@@ -149,8 +157,8 @@
             top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 32px;
-            height: 38px;
+            width: 28px;
+            height: 34px;
             background: radial-gradient(circle at 50% 30%, #fff2a3 0%, #d4af37 60%, #856404 100%);
             border: 2px solid #382500;
             border-radius: 6px 6px 14px 14px;
@@ -163,15 +171,15 @@
             position: absolute;
             top: 15px;
             left: 10px;
-            width: 200px;
-            height: 55px;
+            width: 180px;
+            height: 50px;
             background: repeating-linear-gradient(
                 180deg,
                 #85451c 0px,
                 #5e2d0e 16px,
                 #3a1a06 18px
             );
-            border-radius: 40px 40px 6px 6px;
+            border-radius: 36px 36px 6px 6px;
             border: 3px solid #2b1305;
             box-shadow: inset 0 6px 15px rgba(255, 255, 255, 0.2), 0 8px 18px rgba(0, 0, 0, 0.5);
             z-index: 4;
@@ -185,38 +193,29 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 25px;
-            width: 20px;
+            left: 22px;
+            width: 18px;
             height: 100%;
             background: linear-gradient(90deg, #8a6a1c, #ffd700 50%, #94721d);
             border-left: 2px solid #3d2a03;
             border-right: 2px solid #3d2a03;
             border-radius: 20px 20px 0 0;
-            box-shadow: 110px 0 0 0 #ffd700, 108px 0 0 2px #3d2a03;
+            box-shadow: 102px 0 0 0 #ffd700, 100px 0 0 2px #3d2a03;
         }
 
         /* Top Handle Ring */
         .gift-lid::after {
             content: '';
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 38px;
-            height: 16px;
-            border: 4px solid #d4af37;
+            width: 32px;
+            height: 14px;
+            border: 3px solid #d4af37;
             border-bottom: none;
-            border-radius: 12px 12px 0 0;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
-        }
-
-        /* Hover Feedback */
-        .gift-container:hover .gift-box {
-            transform: translateY(-2px);
-        }
-
-        .gift-container:hover .gift-lid {
-            transform: translateY(-4px);
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
         }
 
         /* Chest Shake / Unlocking Animation */
@@ -230,36 +229,35 @@
 
         /* Chest 3D Open Flip Animation */
         .gift-container.opened .gift-lid {
-            transform: translateY(-15px) rotateX(-115deg);
+            transform: translateY(-12px) rotateX(-115deg);
         }
 
-        /* Glowing treasure burst emerging from opened chest */
         .gift-container.opened .gift-box {
             box-shadow: inset 0 20px 35px #ffe600, 0 15px 40px rgba(255, 215, 0, 0.6);
         }
 
         @keyframes chestRattle {
             0%, 100% { transform: translateX(0) rotate(0deg); }
-            20% { transform: translateX(-6px) rotate(-1.5deg); }
-            40% { transform: translateX(6px) rotate(1.5deg); }
-            60% { transform: translateX(-4px) rotate(-1deg); }
-            80% { transform: translateX(4px) rotate(1deg); }
+            20% { transform: translateX(-5px) rotate(-1.5deg); }
+            40% { transform: translateX(5px) rotate(1.5deg); }
+            60% { transform: translateX(-3px) rotate(-1deg); }
+            80% { transform: translateX(3px) rotate(1deg); }
         }
 
         @keyframes lidRattle {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            30% { transform: translateY(-5px) rotate(-2deg); }
-            70% { transform: translateY(-3px) rotate(2deg); }
+            30% { transform: translateY(-4px) rotate(-2deg); }
+            70% { transform: translateY(-2px) rotate(2deg); }
         }
-        /* ========================================================================= */
 
-        /* Reveal Section */
+        /* ==================== REVEAL / PRIZE LIST (MOBILE OPTIMIZED) ==================== */
         .reveal-card {
-            margin-top: 35px;
+            margin-top: 25px;
             opacity: 0;
-            transform: translateY(20px) scale(0.9);
-            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            transform: translateY(15px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             pointer-events: none;
+            width: 100%;
         }
 
         .reveal-card.show {
@@ -269,54 +267,81 @@
         }
 
         .prize-title {
-            font-size: 1.15rem;
+            font-size: 1rem;
             color: #00ffd0;
             text-transform: uppercase;
-            letter-spacing: 2.5px;
-            margin-bottom: 15px;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
             text-shadow: 0 0 15px rgba(0, 255, 208, 0.5);
         }
 
+        /* Scrollable container capped to viewport height */
         .prize-name {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            align-items: center;
+            gap: 10px;
+            align-items: stretch;
+            max-height: 240px;
+            overflow-y: auto;
+            padding: 6px 8px;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 215, 0, 0.4) transparent;
+        }
+
+        .prize-name::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .prize-name::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.4);
+            border-radius: 10px;
         }
 
         .prize-item {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
             border: 1px solid rgba(255, 215, 0, 0.35);
-            padding: 10px 22px;
-            border-radius: 40px;
-            font-size: 1.5rem;
-            font-weight: 800;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
             color: #ffffff;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 0 15px rgba(255, 215, 0, 0.1);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3), inset 0 0 10px rgba(255, 215, 0, 0.08);
             backdrop-filter: blur(10px);
-            animation: popIn 0.4s ease forwards;
+            animation: popIn 0.35s ease forwards;
+            flex-shrink: 0;
         }
 
         .prize-badge {
             background: linear-gradient(45deg, #ffd700, #ff9900);
             color: #201400;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 900;
-            padding: 4px 10px;
-            border-radius: 20px;
+            padding: 4px 8px;
+            border-radius: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
+        }
+
+        .prize-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: right;
+            margin-left: 8px;
         }
 
         @keyframes popIn {
-            0% { transform: scale(0.7); opacity: 0; }
+            0% { transform: scale(0.85); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* Disabled State styling */
         .disabled {
             cursor: not-allowed !important;
             opacity: 0.6;
@@ -326,12 +351,12 @@
 <body>
 
     <div class="container">
-        <h1>GLAMOUR REWARD SYSTEM</h1>
+        <h1>GLAMOUR REWARDS</h1>
         <p class="subtitle" id="status-text">Enter bill amount to unlock gifts (1 Gift per ₹1000)</p>
 
         <!-- Bill Amount Input -->
         <div class="bill-input-card" id="billInputSection">
-            <input type="number" id="billAmount" placeholder="Enter Bill Amount (₹)" min="0">
+            <input type="number" id="billAmount" placeholder="Enter Bill (₹)" min="0">
             <button onclick="setBillAmount()">Submit Bill</button>
         </div>
 
@@ -341,13 +366,12 @@
         </div>
 
         <div class="reveal-card" id="revealCard">
-            <p class="prize-title" id="prizeTitle">🎉 Congratulations! You Won 🎉</p>
-            <div class="prize-name" id="prizeName">...</div>
+            <p class="prize-title" id="prizeTitle">🎉 Unlocked Rewards 🎉</p>
+            <div class="prize-name" id="prizeName"></div>
         </div>
     </div>
 
     <script>
-        // Weighted items based on your configuration
         const defaultGifts = [
             { name: "MAGIC LED BULB", weight: 20 },
             { name: "WATER BOTTLE",   weight: 20 },
@@ -362,7 +386,6 @@
             { name: "FAN",           weight:  0 }
         ];
 
-        // Specific items that can only ever appear once per bill session
         const oneTimeItems = ["WALL CLOCK", "CUP SET", "LADIES BAG", "FAN"];
 
         let currentGiftPool = [];
@@ -371,7 +394,6 @@
         let wonGiftsList = [];
         let isOpening = false;
 
-        // Bill Amount Handler
         function setBillAmount() {
             const billInput = document.getElementById('billAmount');
             const amount = parseFloat(billInput.value);
@@ -386,46 +408,30 @@
             giftsRevealedCount = 0;
             wonGiftsList = [];
 
-            // Clone pool from default configuration
             currentGiftPool = JSON.parse(JSON.stringify(defaultGifts));
 
-            // Adjust WALL CLOCK weight: 3% if bill is 1000 to 2999
             const clockRef = currentGiftPool.find(g => g.name === "WALL CLOCK");
             if (clockRef) {
-                if (amount >= 1000 && amount <= 2999) {
-                    clockRef.weight = 3;
-                } else {
-                    clockRef.weight = 8;
-                }
+                clockRef.weight = (amount >= 1000 && amount <= 2999) ? 3 : 8;
             }
 
-            // Lock bill inputs
             document.getElementById('billInputSection').style.display = 'none';
-
-            statusText.textContent = `You earned ${totalEligibleGifts} mystery gift(s)! Tap the treasure chest to reveal Gift #1.`;
+            statusText.textContent = `Unlocked ${totalEligibleGifts} gift(s)! Tap chest to open Gift #1.`;
             document.getElementById('giftContainer').classList.remove('disabled');
         }
 
-        // 1. DESKTOP NO REFRESH PROTECTION BLOCK
         window.addEventListener('beforeunload', function (e) {
             e.preventDefault();
-            e.returnValue = 'Are you sure you want to leave? Your reward state will be lost.';
+            e.returnValue = 'Reward state will be lost.';
         });
 
         window.addEventListener('keydown', function (e) {
-            if (
-                e.key === 'F5' || 
-                (e.ctrlKey && e.key === 'r') || 
-                (e.metaKey && e.key === 'r')
-            ) {
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r') || (e.metaKey && e.key === 'r')) {
                 e.preventDefault();
-                alert("Action Denied: Page refreshing is locked on this gift window.");
             }
         });
 
-        // 1b. MOBILE SPECIFIC REFRESH PREVENTION
         let touchStartClientY = 0;
-
         window.addEventListener('touchstart', function (e) {
             if (e.touches.length === 1) {
                 touchStartClientY = e.touches[0].clientY;
@@ -435,13 +441,11 @@
         window.addEventListener('touchmove', function (e) {
             const touchMoveClientY = e.touches[0].clientY;
             const touchDistanceY = touchMoveClientY - touchStartClientY;
-
-            if (document.documentElement.scrollTop === 0 && touchDistanceY > 0) {
+            if (window.scrollY === 0 && touchDistanceY > 0) {
                 e.preventDefault();
             }
         }, { passive: false });
 
-        // 2. WEIGHTED RANDOMIZER ENGINE (WITH ONE-TIME RESTRICTION)
         function getWeightedGift() {
             const totalWeight = currentGiftPool.reduce((sum, item) => sum + item.weight, 0);
             let selectedItemName = defaultGifts[0].name;
@@ -460,18 +464,14 @@
                 }
             }
 
-            // If selected item is a one-time item, disable it for remaining picks
             if (oneTimeItems.includes(selectedItemName)) {
                 const itemRef = currentGiftPool.find(g => g.name === selectedItemName);
-                if (itemRef) {
-                    itemRef.weight = 0;
-                }
+                if (itemRef) itemRef.weight = 0;
             }
 
             return selectedItemName;
         }
 
-        // 3. REVEAL SYSTEM
         function openGift() {
             if (totalEligibleGifts === 0) {
                 alert("Please enter a valid bill amount first!");
@@ -486,7 +486,6 @@
             const revealCard = document.getElementById('revealCard');
             const prizeNameText = document.getElementById('prizeName');
 
-            // Reset box animation states
             container.classList.remove('opened');
             revealCard.classList.remove('show');
 
@@ -504,16 +503,22 @@
                 prizeNameText.innerHTML = wonGiftsList.map((item, idx) => `
                     <div class="prize-item">
                         <span class="prize-badge">Gift #${idx + 1}</span>
-                        <span>${item}</span>
+                        <span class="prize-label">${item}</span>
                     </div>
                 `).join('');
                 revealCard.classList.add('show');
 
+                // Auto-scroll list to display latest item
+                prizeNameText.scrollTo({
+                    top: prizeNameText.scrollHeight,
+                    behavior: 'smooth'
+                });
+
                 if (giftsRevealedCount < totalEligibleGifts) {
-                    statusText.textContent = `Unlocked Gift ${giftsRevealedCount}! Click the treasure chest again for Gift #${giftsRevealedCount + 1}.`;
+                    statusText.textContent = `Claimed Gift #${giftsRevealedCount}! Tap chest again for #${giftsRevealedCount + 1}.`;
                     isOpening = false;
                 } else {
-                    statusText.textContent = "All rewards unlocked from the chest!";
+                    statusText.textContent = "All mystery rewards unlocked!";
                     container.classList.add('disabled');
                     isOpening = false;
                 }
