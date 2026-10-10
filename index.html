@@ -433,12 +433,13 @@
 
             // Tiered pool selection based on bill amount
             if (amount >= 1000 && amount <= 1700) {
-                // Restricted pool: only UMBRELLA, WATER BOTTLE, and TRAY (with TRAY at 1%)
-                // Weights: MAGIC LED BULB (45%), WATER BOTTLE (45%), TRAY (10%)
+                // Restricted pool: only UMBRELLA, WATER BOTTLE, and TRAY (with UMBRELLA at 1%)
+                // Weights: MAGIC LED BULB (45%), WATER BOTTLE (45%), TRAY (20%), UMBRELLA (5%)
                 currentGiftPool = [
                     { name: "MAGIC LED BULB",     weight: 45 },
                     { name: "WATER BOTTLE",       weight: 45 },
-                    { name: "TRAY",               weight: 10 }
+                    { name: "TRAY",               weight: 20 },
+                    { name: "UMBRELLA",           weight: 5  }
                 ];
             } else {
                 // Standard pool for bills above 1700
