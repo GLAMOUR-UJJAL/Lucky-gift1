@@ -396,15 +396,15 @@
 
     <script>
         const defaultGifts = [
-            { name: "MAGIC LED BULB", weight: 20 },
-            { name: "WATER BOTTLE",   weight: 20 },
+            { name: "MAGIC LED BULB", weight: 15 },
+            { name: "WATER BOTTLE",   weight: 15 },
             { name: "COFFEE MUG",    weight:  0 },
             { name: "CUP SET",       weight:  0 },
             { name: "LADIES BAG",    weight: 25 },
-            { name: "UMBRELLA",      weight: 10 },
+            { name: "UMBRELLA",      weight: 15 },
             { name: "TRAY",          weight: 20 },
-            { name: "GENTS BAG",     weight: 10 },
-            { name: "WALL CLOCK",    weight:  8 },
+            { name: "GENTS BAG",     weight: 15 },
+            { name: "WALL CLOCK",    weight:  9 },
             { name: "WRIST WATCH",   weight:  0 },
             { name: "FAN",           weight:  0 }
         ];
@@ -434,11 +434,11 @@
             // Tiered pool selection based on bill amount
             if (amount >= 1000 && amount <= 1700) {
                 // Restricted pool: only UMBRELLA, WATER BOTTLE, and TRAY (with TRAY at 1%)
-                // Weights: UMBRELLA (45%), WATER BOTTLE (45%), TRAY (10%)
+                // Weights: MAGIC LED BULB (45%), WATER BOTTLE (45%), TRAY (10%)
                 currentGiftPool = [
-                    { name: "UMBRELLA",     weight: 45 },
-                    { name: "WATER BOTTLE", weight: 45 },
-                    { name: "TRAY",         weight: 10 }
+                    { name: "MAGIC LED BULB",     weight: 45 },
+                    { name: "WATER BOTTLE",       weight: 45 },
+                    { name: "TRAY",               weight: 10 }
                 ];
             } else {
                 // Standard pool for bills above 1700
