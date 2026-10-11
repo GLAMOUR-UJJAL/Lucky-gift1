@@ -404,7 +404,7 @@
             { name: "UMBRELLA",      weight: 15 },
             { name: "TRAY",          weight: 20 },
             { name: "GENTS BAG",     weight: 15 },
-            { name: "WALL CLOCK",    weight:  10 },
+            { name: "WALL CLOCK",    weight:  9 },
             { name: "WRIST WATCH",   weight:  0 },
             { name: "FAN",           weight:  0 }
         ];
@@ -448,7 +448,7 @@
                 // 3% clock rate between 1701 and 2999; 8% from 3000+
                 const clockRef = currentGiftPool.find(g => g.name === "WALL CLOCK");
                 if (clockRef) {
-                    clockRef.weight = (amount <= 2999) ? 10 : 9;
+                    clockRef.weight = (amount <= 2999) ? 8: 9;
                 }
             }
 
