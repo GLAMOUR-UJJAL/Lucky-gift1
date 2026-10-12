@@ -332,6 +332,20 @@
             cursor: not-allowed !important;
             opacity: 0.6;
         }
+
+        /* Blinking Warning Caption Style */
+        .blink-warning {
+            font-weight: bold;
+            color: #ff0000;
+            animation: blinker 1s linear infinite;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -363,6 +377,9 @@
             <p class="summary-title">🎉 Your Won Rewards 🎉</p>
             <div class="summary-grid" id="summaryGrid"></div>
         </div>
+
+        <!-- Blinking Warning Caption -->
+        <div class="blink-warning">REFRESHING THE PAGE WILL INVALIDATE YOUR GIFT</div>
     </div>
 
     <script>
@@ -397,9 +414,9 @@
 
         let currentGiftPool = [];
         let totalEligibleGifts = 0;
-        let giftsRevealedCount = 0;
         let wonGiftsList = [];
         let isOpening = false;
+        let billAmountValue = 0;
 
         function setBillAmount() {
             const billInput = document.getElementById('billAmount');
@@ -411,8 +428,8 @@
                 return;
             }
 
+            billAmountValue = amount;
             totalEligibleGifts = Math.floor(amount / 1000);
-            giftsRevealedCount = 0;
             wonGiftsList = [];
 
             if (amount >= 1000 && amount <= 1700) {
@@ -432,7 +449,7 @@
 
             document.getElementById('billInputSection').style.display = 'none';
             document.getElementById('chestStage').classList.remove('hide');
-            statusText.textContent = `Unlocked ${totalEligibleGifts} gift(s)! Tap chest for Gift #1.`;
+            statusText.textContent = `Unlocked ${totalEligibleGifts} gift(s)! Tap chest to reveal all.`;
             document.getElementById('giftContainer').classList.remove('disabled');
         }
 
@@ -463,7 +480,7 @@
         }
 
         function openGift() {
-            if (totalEligibleGifts === 0 || isOpening || giftsRevealedCount >= totalEligibleGifts) return;
+            if (totalEligibleGifts === 0 || isOpening) return;
             isOpening = true;
 
             const container = document.getElementById('giftContainer');
@@ -475,44 +492,45 @@
             singleReveal.classList.remove('show');
 
             container.classList.add('shake');
-            statusText.textContent = `Unlocking chest ${giftsRevealedCount + 1} of ${totalEligibleGifts}...`;
+            statusText.textContent = "Unlocking all your mystery gifts...";
 
             setTimeout(() => {
                 container.classList.remove('shake');
                 container.classList.add('opened');
 
-                const winningPrize = getWeightedGift();
-                giftsRevealedCount++;
-                wonGiftsList.push(winningPrize);
+                wonGiftsList = [];
+                for (let i = 0; i < totalEligibleGifts; i++) {
+                    wonGiftsList.push(getWeightedGift());
+                }
+
+                if (billAmountValue > 4000) {
+                    if (!wonGiftsList.includes("WALL CLOCK")) {
+                        const replaceIdx = Math.floor(Math.random() * wonGiftsList.length);
+                        wonGiftsList[replaceIdx] = "WALL CLOCK";
+                    }
+                }
 
                 currentPrizeContent.innerHTML = `
-                    <span class="badge-current">Gift #${giftsRevealedCount}</span>
-                    <span>${winningPrize}</span>
+                    <span class="badge-current">All Unlocked</span>
+                    <span>${totalEligibleGifts} Gift(s) Ready!</span>
                 `;
                 singleReveal.classList.add('show');
+                statusText.textContent = "All gifts revealed! Here is your complete summary:";
 
-                if (giftsRevealedCount < totalEligibleGifts) {
-                    statusText.textContent = `Claimed Gift #${giftsRevealedCount}! Tap chest again for #${giftsRevealedCount + 1}.`;
-                    isOpening = false;
-                } else {
-                    statusText.textContent = "All gifts revealed! Here is your complete summary:";
-                    isOpening = false;
+                setTimeout(() => {
+                    document.getElementById('chestStage').classList.add('hide');
+                    const summaryCard = document.getElementById('summaryCard');
+                    const summaryGrid = document.getElementById('summaryGrid');
 
-                    setTimeout(() => {
-                        document.getElementById('chestStage').classList.add('hide');
-                        const summaryCard = document.getElementById('summaryCard');
-                        const summaryGrid = document.getElementById('summaryGrid');
+                    summaryGrid.innerHTML = wonGiftsList.map((item, idx) => `
+                        <div class="summary-item">
+                            <span class="summary-badge">#${idx + 1}</span>
+                            <span class="summary-name">${item}</span>
+                        </div>
+                    `).join('');
 
-                        summaryGrid.innerHTML = wonGiftsList.map((item, idx) => `
-                            <div class="summary-item">
-                                <span class="summary-badge">#${idx + 1}</span>
-                                <span class="summary-name">${item}</span>
-                            </div>
-                        `).join('');
-
-                        summaryCard.classList.add('show');
-                    }, 1200);
-                }
+                    summaryCard.classList.add('show');
+                }, 1200);
             }, 1100);
         }
     </script>
