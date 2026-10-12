@@ -410,7 +410,7 @@
             { name: "FAN", weight: 0 }
         ];
 
-        const oneTimeItems = ["WALL CLOCK", "CUP SET", "LADIES BAG", "FAN"];
+        const oneTimeItems = ["WALL CLOCK", "CUP SET", "LADIES BAG", "GENTS BAG", "FAN"];
 
         let currentGiftPool = [];
         let totalEligibleGifts = 0;
