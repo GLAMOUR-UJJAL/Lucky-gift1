@@ -397,20 +397,20 @@
         });
 
         const defaultGifts = [
-            { name: "MAGIC LED BULB", weight: 15 },
-            { name: "WATER BOTTLE", weight: 15 },
+            { name: "MAGIC LED BULB", weight: 12 },
+            { name: "WATER BOTTLE", weight: 12 },
             { name: "COFFEE MUG", weight: 0 },
             { name: "CUP SET", weight: 0 },
-            { name: "LADIES BAG", weight: 25 },
-            { name: "UMBRELLA", weight: 15 },
-            { name: "TRAY", weight: 20 },
+            { name: "LADIES BAG", weight: 22 },
+            { name: "UMBRELLA", weight: 12 },
+            { name: "TRAY", weight: 15 },
             { name: "GENTS BAG", weight: 15 },
-            { name: "WALL CLOCK", weight: 9 },
+            { name: "WALL CLOCK", weight: 8 },
             { name: "WRIST WATCH", weight: 0 },
             { name: "FAN", weight: 0 }
         ];
 
-        const oneTimeItems = ["WALL CLOCK", "CUP SET", "LADIES BAG", "GENTS BAG", "FAN"];
+        const oneTimeItems = ["CUP SET", "LADIES BAG", "FAN"];
 
         let currentGiftPool = [];
         let totalEligibleGifts = 0;
@@ -508,6 +508,17 @@
                         const replaceIdx = Math.floor(Math.random() * wonGiftsList.length);
                         wonGiftsList[replaceIdx] = "WALL CLOCK";
                     }
+                }
+
+                if (billAmountValue > 8000) {
+                    ["WALL CLOCK", "GENTS BAG"].forEach(item => {
+                        let count = wonGiftsList.filter(g => g === item).length;
+                        while (count < 2 && wonGiftsList.length > 0) {
+                            const replaceIdx = Math.floor(Math.random() * wonGiftsList.length);
+                            wonGiftsList[replaceIdx] = item;
+                            count = wonGiftsList.filter(g => g === item).length;
+                        }
+                    });
                 }
 
                 currentPrizeContent.innerHTML = `
