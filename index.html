@@ -122,7 +122,7 @@
             transform: translateX(-50%);
             width: 160px;
             height: 22px;
-            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(212, 175, 55, 0.2) 40%, transparent 75%);
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 150, 255, 0.25) 40%, transparent 75%);
             border-radius: 50%;
             z-index: 1;
         }
@@ -132,9 +132,9 @@
             width: 160px;
             height: 90px;
             margin: 55px auto 0 auto;
-            background: repeating-linear-gradient(180deg, #6e3a17 0px, #50260c 18px, #371906 20px);
+            background: repeating-linear-gradient(180deg, #1e3799 0px, #0c2461 18px, #0a192f 20px);
             border-radius: 0 0 12px 12px;
-            border: 3px solid #2b1305;
+            border: 3px solid #08101e;
             box-shadow: inset 0 -10px 25px rgba(0, 0, 0, 0.7), 0 14px 26px rgba(0, 0, 0, 0.6);
             z-index: 2;
         }
@@ -146,10 +146,10 @@
             left: 18px;
             width: 16px;
             height: 100%;
-            background: linear-gradient(90deg, #8a6a1c, #ffd700 50%, #94721d);
-            border-left: 2px solid #3d2a03;
-            border-right: 2px solid #3d2a03;
-            box-shadow: 92px 0 0 0 #ffd700, 90px 0 0 2px #3d2a03;
+            background: linear-gradient(90deg, #1b9cfc, #70a1ff 50%, #1e90ff);
+            border-left: 2px solid #0c2461;
+            border-right: 2px solid #0c2461;
+            box-shadow: 108px 0 0 0 #70a1ff;
         }
 
         .gift-box::after {
@@ -160,8 +160,8 @@
             transform: translateX(-50%);
             width: 28px;
             height: 32px;
-            background: radial-gradient(circle at 50% 30%, #fff2a3 0%, #d4af37 60%, #856404 100%);
-            border: 2px solid #382500;
+            background: radial-gradient(circle at 50% 30%, #a0c4ff 0%, #3a86ff 60%, #004e92 100%);
+            border: 2px solid #08101e;
             border-radius: 6px 6px 14px 14px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.6);
             z-index: 5;
@@ -173,9 +173,9 @@
             left: 5px;
             width: 170px;
             height: 48px;
-            background: repeating-linear-gradient(180deg, #85451c 0px, #5e2d0e 16px, #3a1a06 18px);
+            background: repeating-linear-gradient(180deg, #2541b2 0px, #102a78 16px, #0a192f 18px);
             border-radius: 34px 34px 6px 6px;
-            border: 3px solid #2b1305;
+            border: 3px solid #08101e;
             box-shadow: inset 0 6px 15px rgba(255, 255, 255, 0.2), 0 8px 18px rgba(0, 0, 0, 0.5);
             z-index: 4;
             transform-origin: center top;
@@ -187,14 +187,14 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 20px;
+            left: 18px;
             width: 18px;
             height: 100%;
-            background: linear-gradient(90deg, #8a6a1c, #ffd700 50%, #94721d);
-            border-left: 2px solid #3d2a03;
-            border-right: 2px solid #3d2a03;
+            background: linear-gradient(90deg, #1b9cfc, #70a1ff 50%, #1e90ff);
+            border-left: 2px solid #0c2461;
+            border-right: 2px solid #0c2461;
             border-radius: 18px 18px 0 0;
-            box-shadow: 94px 0 0 0 #ffd700, 92px 0 0 2px #3d2a03;
+            box-shadow: 110px 0 0 0 #70a1ff;
         }
 
         .gift-container.shake .gift-box {
@@ -410,7 +410,7 @@
             { name: "FAN", weight: 0 }
         ];
 
-        const oneTimeItems = ["CUP SET","GENTS BAG", "LADIES BAG", "FAN"];
+        const oneTimeItems = ["CUP SET", "LADIES BAG", "FAN"];
 
         let currentGiftPool = [];
         let totalEligibleGifts = 0;
@@ -453,8 +453,7 @@
                     { name: "MAGIC LED BULB", weight: 45 },
                     { name: "WATER BOTTLE", weight: 45 },
                     { name: "TRAY", weight: 20 },
-                    { name: "UMBRELLA", weight: 9 }
-                    { name: "GENTS BAG", weight: 9 }
+                    { name: "UMBRELLA", weight: 5 }
                 ];
             } else {
                 currentGiftPool = JSON.parse(JSON.stringify(defaultGifts));
