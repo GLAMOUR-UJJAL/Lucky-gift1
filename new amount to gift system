@@ -198,11 +198,11 @@
         }
 
         .gift-container.shake .gift-box {
-            animation: chestRattle 0.4s ease-in-out infinite;
+            animation: chestRattle 0.2s ease-in-out infinite;
         }
 
         .gift-container.shake .gift-lid {
-            animation: lidRattle 0.4s ease-in-out infinite;
+            animation: lidRattle 0.2s ease-in-out infinite;
         }
 
         .gift-container.opened .gift-lid {
@@ -228,7 +228,7 @@
             margin-top: 20px;
             opacity: 0;
             transform: translateY(10px) scale(0.9);
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            transition: all 0.1s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             pointer-events: none;
             min-height: 52px;
         }
