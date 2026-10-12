@@ -366,7 +366,7 @@
 <body>
 
     <div class="container">
-        <h1>GLAMOUR REWARDS</h1>
+        <h1>GLAMOUR REWARDS SYSTEM</h1>
         <p class="subtitle" id="status-text">Enter bill amount to unlock gifts (1 Gift per ₹1000)</p>
 
         <!-- Bill Amount Input -->
@@ -445,7 +445,7 @@
                 // Standard pool for bills above 1700
                 currentGiftPool = JSON.parse(JSON.stringify(defaultGifts));
 
-                // 3% clock rate between 1701 and 2999; 8% from 3000+
+                // 8% clock rate between 1701 and 2999; 9% from 3000+
                 const clockRef = currentGiftPool.find(g => g.name === "WALL CLOCK");
                 if (clockRef) {
                     clockRef.weight = (amount <= 2999) ? 8: 9;
