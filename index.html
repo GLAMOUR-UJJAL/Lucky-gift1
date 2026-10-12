@@ -428,6 +428,22 @@
                 return;
             }
 
+            const lastAmount = localStorage.getItem('last_bill_amount');
+            const lastTime = localStorage.getItem('last_bill_time');
+            const currentTime = new Date().getTime();
+
+            if (lastAmount && lastTime && parseFloat(lastAmount) === amount) {
+                const elapsedSeconds = (currentTime - parseFloat(lastTime)) / 1000;
+                if (elapsedSeconds < 70) {
+                    const remaining = Math.ceil(70 - elapsedSeconds);
+                    alert(`This bill amount was already entered recently. Please wait ${remaining} seconds before trying again.`);
+                    return;
+                }
+            }
+
+            localStorage.setItem('last_bill_amount', amount);
+            localStorage.setItem('last_bill_time', currentTime);
+
             billAmountValue = amount;
             totalEligibleGifts = Math.floor(amount / 1000);
             wonGiftsList = [];
