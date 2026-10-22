@@ -467,7 +467,7 @@
             50% { opacity: 0; }
         }
 
-        /* Hidden Admin Trigger */
+        /* Admin Trigger Section (Hidden from Customers) */
         .admin-trigger {
             margin-top: 25px;
             font-size: 0.75rem;
@@ -523,40 +523,38 @@
         <!-- Blinking Warning Caption -->
         <div class="blink-warning">REFRESHING THE PAGE WILL INVALIDATE YOUR GIFT</div>
 
-        <!-- Hidden Admin Feature Link -->
+        <!-- Hidden Admin Panel Button -->
         <div class="admin-trigger" onclick="openAdminPanel()">⚙️ Admin Dashboard</div>
     </div>
 
     <script>
         /* =========================================================
-           ADMIN CONFIGURATION & ITEM-WISE REVEAL TRACKER
+           ADMIN CONFIGURATION & ITEM-WISE DAILY TRACKER SYSTEM
         ======================================================== */
-        const ADMIN_SECRET_CODE = "admin123"; // <-- CHANGE YOUR SECRET CODE HERE ANYTIME
+        const ADMIN_SECRET_CODE = "admin123"; // CHANGE YOUR ADMIN CODE HERE ANYTIME
 
         function openAdminPanel() {
-            const enteredCode = prompt("Enter Admin Code to view daily item-wise reveals:");
+            const enteredCode = prompt("Enter Admin Secret Code:");
             if (enteredCode === null) return;
 
             if (enteredCode === ADMIN_SECRET_CODE) {
                 checkAndResetDailyCount();
-                const totalToday = localStorage.getItem('total_gifts_revealed_today') || 0;
-                const itemCounts = JSON.parse(localStorage.getItem('item_wise_reveals_today') || '{}');
-                const lastResetDate = localStorage.getItem('admin_reset_date') || "Today";
+                const todayStr = new Date().toDateString();
+                const itemCounts = JSON.parse(localStorage.getItem('daily_item_counts') || '{}');
+                let totalGifts = 0;
+                let report = `===========================\n  DAILY REWARD REPORT (${todayStr})\n===========================\n\n`;
 
-                let report = `--- ADMIN DAILY REPORT (${lastResetDate}) ---\n\n`;
-                report += `TOTAL GIFTS REVEALED: ${totalToday}\n`;
-                report += `-----------------------------------------\n`;
-                report += `ITEM-WISE BREAKDOWN:\n\n`;
-
-                const itemsKeys = Object.keys(itemCounts);
-                if (itemsKeys.length === 0) {
-                    report += `No gifts have been revealed today yet.`;
+                const items = Object.keys(itemCounts);
+                if (items.length === 0) {
+                    report += "No gifts revealed today yet.\n";
                 } else {
-                    itemsKeys.forEach(itemName => {
-                        report += `• ${itemName}: ${itemCounts[itemName]}\n`;
+                    items.forEach(item => {
+                        const count = itemCounts[item];
+                        report += `• ${item}: ${count}\n`;
+                        totalGifts += count;
                     });
                 }
-
+                report += `\n---------------------------\nTOTAL GIFTS REVEALED TODAY: ${totalGifts}\n===========================`;
                 alert(report);
             } else {
                 alert("Incorrect Admin Code!");
@@ -568,13 +566,21 @@
             const storedDate = localStorage.getItem('admin_reset_date');
             if (storedDate !== todayStr) {
                 localStorage.setItem('admin_reset_date', todayStr);
-                localStorage.setItem('total_gifts_revealed_today', '0');
-                localStorage.setItem('item_wise_reveals_today', JSON.stringify({}));
+                localStorage.setItem('daily_item_counts', JSON.stringify({}));
             }
         }
 
+        function recordRevealedGiftsItemWise(wonGifts) {
+            checkAndResetDailyCount();
+            const itemCounts = JSON.parse(localStorage.getItem('daily_item_counts') || '{}');
+            wonGifts.forEach(giftName => {
+                itemCounts[giftName] = (itemCounts[giftName] || 0) + 1;
+            });
+            localStorage.setItem('daily_item_counts', JSON.stringify(itemCounts));
+        }
+
         /* =========================================================
-            WEB AUDIO API SYNTHESIZER SOUND SYSTEM
+           WEB AUDIO API SYNTHESIZER SOUND SYSTEM
         ======================================================== */
         let audioCtx = null;
         let isMuted = false;
@@ -673,7 +679,7 @@
         }
 
         /* =========================================================
-            BACKGROUND FLOATING PARTICLES CANVAS
+           BACKGROUND FLOATING PARTICLES CANVAS
         ======================================================== */
         const bgCanvas = document.getElementById('bgCanvas');
         const bgCtx = bgCanvas.getContext('2d');
@@ -717,7 +723,7 @@
         animateBgParticles();
 
         /* =========================================================
-            CANVAS CONFETTI SYSTEM
+           CANVAS CONFETTI SYSTEM
         ======================================================== */
         const confettiCanvas = document.getElementById('confettiCanvas');
         const confettiCtx = confettiCanvas.getContext('2d');
@@ -777,7 +783,7 @@
         }
 
         /* =========================================================
-            ORIGINAL APPLICATION LOGIC
+           ORIGINAL APPLICATION LOGIC (COMPLETELY PRESERVED)
         ======================================================== */
 
         // Restrict page refresh/reload attempts
@@ -945,19 +951,8 @@
                     });
                 }
 
-                // --- ITEM-WISE ADMIN COUNTER LOGIC ---
-                checkAndResetDailyCount();
-                let currentTotalToday = parseInt(localStorage.getItem('total_gifts_revealed_today') || '0', 10);
-                let itemWiseCounts = JSON.parse(localStorage.getItem('item_wise_reveals_today') || '{}');
-
-                wonGiftsList.forEach(giftName => {
-                    currentTotalToday += 1;
-                    itemWiseCounts[giftName] = (itemWiseCounts[giftName] || 0) + 1;
-                });
-
-                localStorage.setItem('total_gifts_revealed_today', currentTotalToday.toString());
-                localStorage.setItem('item_wise_reveals_today', JSON.stringify(itemWiseCounts));
-                // -------------------------------------
+                // Record item-wise revealed gifts daily
+                recordRevealedGiftsItemWise(wonGiftsList);
 
                 currentPrizeContent.innerHTML = `
                     <span class="badge-current">All Unlocked</span>
