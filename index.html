@@ -518,6 +518,24 @@
             }
         }
 
+        function sendToGoogleSheet(gifts, billAmount) {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzZtvulwMB89fFzErZncsQiNoRthw-8ZmEFg-UFPDa0vghSsq5X4o6l39-dkrfRuer8PA/exec';
+            if (scriptURL === 'https://script.google.com/macros/s/AKfycbzZtvulwMB89fFzErZncsQiNoRthw-8ZmEFg-UFPDa0vghSsq5X4o6l39-dkrfRuer8PA/exec') return;
+
+            const payload = {
+                date: new Date().toISOString().split('T')[0],
+                billAmount: billAmount,
+                gifts: gifts
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(err => console.log('Sheet Sync Error:', err));
+        }
+
         function openGift() {
             if (totalEligibleGifts === 0 || isOpening) return;
             isOpening = true;
@@ -560,6 +578,8 @@
                         }
                     });
                 }
+
+                sendToGoogleSheet(wonGiftsList, billAmountValue);
 
                 currentPrizeContent.innerHTML = `
                     <span class="badge-current">All Unlocked</span>
