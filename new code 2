@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystery Gift Reveal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1c29 0%, #10111a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            padding: 16px;
+            z-index: 2;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px rgba(255, 65, 108, 0.3);
+        }
+
+        p.subtitle {
+            color: #8a8dbe;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Bill Input Section */
+        .bill-input-card {
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .bill-input-card input {
+            background: #25283d;
+            border: 1px solid #414568;
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            outline: none;
+            width: 100%;
+            max-width: 280px;
+            text-align: center;
+        }
+
+        .bill-input-card button {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .bill-input-card button:active {
+            transform: scale(0.97);
+        }
+
+        /* Treasure Chest Stage */
+        .chest-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .chest-stage.hide {
+            display: none;
+        }
+
+        .gift-container {
+            position: relative;
+            width: 180px;
+            height: 160px;
+            margin: 0 auto;
+            cursor: pointer;
+            perspective: 800px;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+
+        .gift-container::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 22px;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 150, 255, 0.25) 40%, transparent 75%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .gift-box {
+            position: relative;
+            width: 160px;
+            height: 90px;
+            margin: 55px auto 0 auto;
+            background: repeating-linear-gradient(180deg, #1e3799 0px, #0c2461 18px, #0a192f 20px);
+            border-radius: 0 0 12px 12px;
+            border: 3px solid #08101e;
+            box-shadow: inset 0 -10px 25px rgba(0, 0, 0, 0.7), 0 14px 26px rgba(0, 0, 0, 0.6);
+            z-index: 2;
+        }
+
+        .gift-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 18px;
+            width: 16px;
+            height: 100%;
+            background: linear-gradient(90deg, #1b9cfc, #70a1ff 50%, #1e90ff);
+            border-left: 2px solid #0c2461;
+            border-right: 2px solid #0c2461;
+            box-shadow: 108px 0 0 0 #70a1ff;
+        }
+
+        .gift-box::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 32px;
+            background: radial-gradient(circle at 50% 30%, #a0c4ff 0%, #3a86ff 60%, #004e92 100%);
+            border: 2px solid #08101e;
+            border-radius: 6px 6px 14px 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.6);
+            z-index: 5;
+        }
+
+        .gift-lid {
+            position: absolute;
+            top: 15px;
+            left: 5px;
+            width: 170px;
+            height: 48px;
+            background: repeating-linear-gradient(180deg, #2541b2 0px, #102a78 16px, #0a192f 18px);
+            border-radius: 34px 34px 6px 6px;
+            border: 3px solid #08101e;
+            box-shadow: inset 0 6px 15px rgba(255, 255, 255, 0.2), 0 8px 18px rgba(0, 0, 0, 0.5);
+            z-index: 4;
+            transform-origin: center top;
+            transition: transform 0.8s cubic-bezier(0.2, 0.85, 0.3, 1.25);
+            transform-style: preserve-3d;
+        }
+
+        .gift-lid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 18px;
+            width: 18px;
+            height: 100%;
+            background: linear-gradient(90deg, #1b9cfc, #70a1ff 50%, #1e90ff);
+            border-left: 2px solid #0c2461;
+            border-right: 2px solid #0c2461;
+            border-radius: 18px 18px 0 0;
+            box-shadow: 110px 0 0 0 #70a1ff;
+        }
+
+        .gift-container.shake .gift-box {
+            animation: chestRattle 0.2s ease-in-out infinite;
+        }
+
+        .gift-container.shake .gift-lid {
+            animation: lidRattle 0.2s ease-in-out infinite;
+        }
+
+        .gift-container.opened .gift-lid {
+            transform: translateY(-12px) rotateX(-115deg);
+        }
+
+        @keyframes chestRattle {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            20% { transform: translateX(-5px) rotate(-1.5deg); }
+            40% { transform: translateX(5px) rotate(1.5deg); }
+            60% { transform: translateX(-3px) rotate(-1deg); }
+            80% { transform: translateX(3px) rotate(1deg); }
+        }
+
+        @keyframes lidRattle {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            30% { transform: translateY(-4px) rotate(-2deg); }
+            70% { transform: translateY(-2px) rotate(2deg); }
+        }
+
+        /* Single Live Gift Reveal */
+        .single-reveal {
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(10px) scale(0.9);
+            transition: all 0.1s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            pointer-events: none;
+            min-height: 52px;
+        }
+
+        .single-reveal.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .current-prize-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge-current {
+            background: linear-gradient(45deg, #ffd700, #ff9900);
+            color: #201400;
+            font-size: 0.75rem;
+            font-weight: 900;
+            padding: 3px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        /* Final Summary View */
+        .summary-card {
+            display: none;
+            opacity: 0;
+            transform: scale(0.92);
+            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: 16px;
+            padding: 20px 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+        }
+
+        .summary-card.show {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .summary-title {
+            font-size: 1.1rem;
+            color: #00ffd0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 12px rgba(0, 255, 208, 0.5);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .summary-badge {
+            background: linear-gradient(45deg, #ffd700, #ff9900);
+            color: #201400;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .summary-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #ffffff;
+        }
+
+        .disabled {
+            cursor: not-allowed !important;
+            opacity: 0.6;
+        }
+
+        /* Blinking Warning Caption Style */
+        .blink-warning {
+            font-weight: bold;
+            color: #ff0000;
+            animation: blinker 1s linear infinite;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>GLAMOUR'S REWARD SYSTEM</h1>
+        <p class="subtitle" id="status-text">Enter bill amount to unlock gifts (1 Gift per ₹1000)</p>
+
+        <!-- Bill Amount Input -->
+        <div class="bill-input-card" id="billInputSection">
+            <input type="number" id="billAmount" placeholder="Enter Bill Amount (₹)" min="1000" inputmode="numeric">
+            <button onclick="setBillAmount()">Unlock Gifts</button>
+        </div>
+
+        <!-- Single Chest Stage -->
+        <div class="chest-stage hide" id="chestStage">
+            <div class="gift-container" id="giftContainer" onclick="openGift()">
+                <div class="gift-lid" id="giftLid"></div>
+                <div class="gift-box"></div>
+            </div>
+
+            <div class="single-reveal" id="singleReveal">
+                <div class="current-prize-pill" id="currentPrizeContent"></div>
+            </div>
+        </div>
+
+        <!-- Final Summary View -->
+        <div class="summary-card" id="summaryCard">
+            <p class="summary-title">🎉 Your Won Rewards 🎉</p>
+            <div class="summary-grid" id="summaryGrid"></div>
+        </div>
+
+        <!-- Blinking Warning Caption -->
+        <div class="blink-warning">REFRESHING THE PAGE WILL INVALIDATE YOUR GIFT</div>
+    </div>
+
+    <script>
+        // Restrict page refresh/reload attempts (blocks F5, Ctrl+R, Cmd+R, and warns on unload)
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'F5' || (e.ctrlKey && e.key.toLowerCase() === 'r') || (e.metaKey && e.key.toLowerCase() === 'r')) {
+                e.preventDefault();
+                alert("Page refresh is restricted on this rewards page!");
+            }
+        });
+
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
+        const defaultGifts = [
+            { name: "MAGIC LED BULB", weight: 15 },
+            { name: "WATER BOTTLE", weight: 15 },
+            { name: "COFFEE MUG", weight: 0 },
+            { name: "CUP SET", weight: 0 },
+            { name: "LADIES BAG", weight: 25 },
+            { name: "UMBRELLA", weight: 15 },
+            { name: "TRAY", weight: 20 },
+            { name: "GENTS BAG", weight: 15 },
+            { name: "WALL CLOCK", weight: 9 },
+            { name: "WRIST WATCH", weight: 0 },
+            { name: "FAN", weight: 0 }
+        ];
+
+        const oneTimeItems = ["CUP SET", "LADIES BAG", "FAN"];
+
+        let currentGiftPool = [];
+        let totalEligibleGifts = 0;
+        let wonGiftsList = [];
+        let isOpening = false;
+        let billAmountValue = 0;
+
+        function setBillAmount() {
+            const billInput = document.getElementById('billAmount');
+            const amount = parseFloat(billInput.value);
+            const statusText = document.getElementById('status-text');
+
+            if (isNaN(amount) || amount < 1000) {
+                alert("Minimum bill amount must be ₹1000 to earn a gift!");
+                return;
+            }
+
+            const lastAmount = localStorage.getItem('last_bill_amount');
+            const lastTime = localStorage.getItem('last_bill_time');
+            const currentTime = new Date().getTime();
+
+            if (lastAmount && lastTime && parseFloat(lastAmount) === amount) {
+                const elapsedSeconds = (currentTime - parseFloat(lastTime)) / 1000;
+                if (elapsedSeconds < 70) {
+                    const remaining = Math.ceil(70 - elapsedSeconds);
+                    alert(`This bill amount was already entered recently. Please wait ${remaining} seconds before trying again.`);
+                    return;
+                }
+            }
+
+            localStorage.setItem('last_bill_amount', amount);
+            localStorage.setItem('last_bill_time', currentTime);
+
+            billAmountValue = amount;
+            totalEligibleGifts = Math.floor(amount / 1000);
+            wonGiftsList = [];
+
+            if (amount >= 1000 && amount <= 1700) {
+                currentGiftPool = [
+                    { name: "MAGIC LED BULB", weight: 45 },
+                    { name: "WATER BOTTLE", weight: 45 },
+                    { name: "TRAY", weight: 20 },
+                    { name: "UMBRELLA", weight: 5 }
+                ];
+            } else {
+                currentGiftPool = JSON.parse(JSON.stringify(defaultGifts));
+                const clockRef = currentGiftPool.find(g => g.name === "WALL CLOCK");
+                if (clockRef) {
+                    clockRef.weight = (amount <= 2999) ? 8 : 9;
+                }
+            }
+
+            document.getElementById('billInputSection').style.display = 'none';
+            document.getElementById('chestStage').classList.remove('hide');
+            statusText.textContent = `Unlocked ${totalEligibleGifts} gift(s)! Tap chest to reveal all.`;
+            document.getElementById('giftContainer').classList.remove('disabled');
+        }
+
+        function getWeightedGift() {
+            const totalWeight = currentGiftPool.reduce((sum, item) => sum + item.weight, 0);
+            let selectedItemName = currentGiftPool[0].name;
+
+            if (totalWeight <= 0) {
+                const fallbackGifts = ["WATER BOTTLE", "UMBRELLA"];
+                selectedItemName = fallbackGifts[Math.floor(Math.random() * fallbackGifts.length)];
+            } else {
+                let random = Math.random() * totalWeight;
+                for (const gift of currentGiftPool) {
+                    if (random < gift.weight) {
+                        selectedItemName = gift.name;
+                        break;
+                    }
+                    random -= gift.weight;
+                }
+            }
+
+            if (oneTimeItems.includes(selectedItemName)) {
+                const itemRef = currentGiftPool.find(g => g.name === selectedItemName);
+                if (itemRef) itemRef.weight = 0;
+            }
+
+            return selectedItemName;
+        }
+
+        function playRevealSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                oscillator.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6
+                
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.6);
+            } catch (e) {
+                // AudioContext not allowed or supported without user interaction
+            }
+        }
+
+        function openGift() {
+            if (totalEligibleGifts === 0 || isOpening) return;
+            isOpening = true;
+
+            const container = document.getElementById('giftContainer');
+            const statusText = document.getElementById('status-text');
+            const singleReveal = document.getElementById('singleReveal');
+            const currentPrizeContent = document.getElementById('currentPrizeContent');
+
+            container.classList.remove('opened');
+            singleReveal.classList.remove('show');
+
+            container.classList.add('shake');
+            statusText.textContent = "Unlocking all your mystery gifts...";
+
+            setTimeout(() => {
+                container.classList.remove('shake');
+                container.classList.add('opened');
+                playRevealSound();
+
+                wonGiftsList = [];
+                for (let i = 0; i < totalEligibleGifts; i++) {
+                    wonGiftsList.push(getWeightedGift());
+                }
+
+                if (billAmountValue > 4000) {
+                    if (!wonGiftsList.includes("WALL CLOCK")) {
+                        const replaceIdx = Math.floor(Math.random() * wonGiftsList.length);
+                        wonGiftsList[replaceIdx] = "WALL CLOCK";
+                    }
+                }
+
+                if (billAmountValue > 8000) {
+                    ["WALL CLOCK", "GENTS BAG"].forEach(item => {
+                        let count = wonGiftsList.filter(g => g === item).length;
+                        while (count < 2 && wonGiftsList.length > 0) {
+                            const replaceIdx = Math.floor(Math.random() * wonGiftsList.length);
+                            wonGiftsList[replaceIdx] = item;
+                            count = wonGiftsList.filter(g => g === item).length;
+                        }
+                    });
+                }
+
+                currentPrizeContent.innerHTML = `
+                    <span class="badge-current">All Unlocked</span>
+                    <span>${totalEligibleGifts} Gift(s) Ready!</span>
+                `;
+                singleReveal.classList.add('show');
+                statusText.textContent = "All gifts revealed! Here is your complete summary:";
+
+                setTimeout(() => {
+                    document.getElementById('chestStage').classList.add('hide');
+                    const summaryCard = document.getElementById('summaryCard');
+                    const summaryGrid = document.getElementById('summaryGrid');
+
+                    summaryGrid.innerHTML = wonGiftsList.map((item, idx) => `
+                        <div class="summary-item">
+                            <span class="summary-badge">#${idx + 1}</span>
+                            <span class="summary-name">${item}</span>
+                        </div>
+                    `).join('');
+
+                    summaryCard.classList.add('show');
+                }, 1200);
+            }, 1100);
+        }
+    </script>
+</body>
+</html>
