@@ -466,6 +466,19 @@
         @keyframes blinker {
             50% { opacity: 0; }
         }
+
+        /* Hidden Admin Trigger */
+        .admin-trigger {
+            margin-top: 25px;
+            font-size: 0.75rem;
+            color: #414568;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s;
+        }
+        .admin-trigger:hover {
+            color: #8a8dbe;
+        }
     </style>
 </head>
 <body>
@@ -509,12 +522,60 @@
 
         <!-- Blinking Warning Caption -->
         <div class="blink-warning">REFRESHING THE PAGE WILL INVALIDATE YOUR GIFT</div>
+
+        <!-- Hidden Admin Feature Link -->
+        <div class="admin-trigger" onclick="openAdminPanel()">⚙️ Admin Dashboard</div>
     </div>
 
     <script>
         /* =========================================================
-           WEB AUDIO API SYNTHESIZER SOUND SYSTEM
-        ========================================================= */
+           ADMIN CONFIGURATION & ITEM-WISE REVEAL TRACKER
+        ======================================================== */
+        const ADMIN_SECRET_CODE = "admin123"; // <-- CHANGE YOUR SECRET CODE HERE ANYTIME
+
+        function openAdminPanel() {
+            const enteredCode = prompt("Enter Admin Code to view daily item-wise reveals:");
+            if (enteredCode === null) return;
+
+            if (enteredCode === ADMIN_SECRET_CODE) {
+                checkAndResetDailyCount();
+                const totalToday = localStorage.getItem('total_gifts_revealed_today') || 0;
+                const itemCounts = JSON.parse(localStorage.getItem('item_wise_reveals_today') || '{}');
+                const lastResetDate = localStorage.getItem('admin_reset_date') || "Today";
+
+                let report = `--- ADMIN DAILY REPORT (${lastResetDate}) ---\n\n`;
+                report += `TOTAL GIFTS REVEALED: ${totalToday}\n`;
+                report += `-----------------------------------------\n`;
+                report += `ITEM-WISE BREAKDOWN:\n\n`;
+
+                const itemsKeys = Object.keys(itemCounts);
+                if (itemsKeys.length === 0) {
+                    report += `No gifts have been revealed today yet.`;
+                } else {
+                    itemsKeys.forEach(itemName => {
+                        report += `• ${itemName}: ${itemCounts[itemName]}\n`;
+                    });
+                }
+
+                alert(report);
+            } else {
+                alert("Incorrect Admin Code!");
+            }
+        }
+
+        function checkAndResetDailyCount() {
+            const todayStr = new Date().toDateString();
+            const storedDate = localStorage.getItem('admin_reset_date');
+            if (storedDate !== todayStr) {
+                localStorage.setItem('admin_reset_date', todayStr);
+                localStorage.setItem('total_gifts_revealed_today', '0');
+                localStorage.setItem('item_wise_reveals_today', JSON.stringify({}));
+            }
+        }
+
+        /* =========================================================
+            WEB AUDIO API SYNTHESIZER SOUND SYSTEM
+        ======================================================== */
         let audioCtx = null;
         let isMuted = false;
 
@@ -611,31 +672,9 @@
             });
         }
 
-        // Sound Effect 4: Item Pop Sound
-        function playPopSound() {
-            if (isMuted) return;
-            initAudio();
-            if (!audioCtx) return;
-
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.05);
-
-            gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.05);
-        }
-
         /* =========================================================
-           BACKGROUND FLOATING PARTICLES CANVAS
-        ========================================================= */
+            BACKGROUND FLOATING PARTICLES CANVAS
+        ======================================================== */
         const bgCanvas = document.getElementById('bgCanvas');
         const bgCtx = bgCanvas.getContext('2d');
         let bgParticles = [];
@@ -678,8 +717,8 @@
         animateBgParticles();
 
         /* =========================================================
-           CANVAS CONFETTI SYSTEM
-        ========================================================= */
+            CANVAS CONFETTI SYSTEM
+        ======================================================== */
         const confettiCanvas = document.getElementById('confettiCanvas');
         const confettiCtx = confettiCanvas.getContext('2d');
         let confettiParticles = [];
@@ -738,10 +777,10 @@
         }
 
         /* =========================================================
-           ORIGINAL APPLICATION LOGIC (COMPLETELY PRESERVED)
-        ========================================================= */
+            ORIGINAL APPLICATION LOGIC
+        ======================================================== */
 
-        // Restrict page refresh/reload attempts (blocks F5, Ctrl+R, Cmd+R, and warns on unload)
+        // Restrict page refresh/reload attempts
         window.addEventListener('keydown', function(e) {
             if (e.key === 'F5' || (e.ctrlKey && e.key.toLowerCase() === 'r') || (e.metaKey && e.key.toLowerCase() === 'r')) {
                 e.preventDefault();
@@ -906,40 +945,51 @@
                     });
                 }
 
+                // --- ITEM-WISE ADMIN COUNTER LOGIC ---
+                checkAndResetDailyCount();
+                let currentTotalToday = parseInt(localStorage.getItem('total_gifts_revealed_today') || '0', 10);
+                let itemWiseCounts = JSON.parse(localStorage.getItem('item_wise_reveals_today') || '{}');
+
+                wonGiftsList.forEach(giftName => {
+                    currentTotalToday += 1;
+                    itemWiseCounts[giftName] = (itemWiseCounts[giftName] || 0) + 1;
+                });
+
+                localStorage.setItem('total_gifts_revealed_today', currentTotalToday.toString());
+                localStorage.setItem('item_wise_reveals_today', JSON.stringify(itemWiseCounts));
+                // -------------------------------------
+
                 currentPrizeContent.innerHTML = `
                     <span class="badge-current">All Unlocked</span>
                     <span>${totalEligibleGifts} Gift(s) Ready!</span>
                 `;
                 singleReveal.classList.add('show');
-                statusText.textContent = "All gifts revealed! Here is your complete summary:";
 
                 setTimeout(() => {
-                    document.getElementById('chestStage').classList.add('hide');
-                    chestStage.classList.remove('opening');
-                    
+                    chestStage.classList.add('hide');
                     const summaryCard = document.getElementById('summaryCard');
                     const summaryGrid = document.getElementById('summaryGrid');
+                    summaryGrid.innerHTML = '';
 
-                    summaryGrid.innerHTML = wonGiftsList.map((item, idx) => `
-                        <div class="summary-item">
+                    wonGiftsList.forEach((giftName, idx) => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'summary-item';
+                        itemDiv.innerHTML = `
                             <span class="summary-badge">#${idx + 1}</span>
-                            <span class="summary-name">${item}</span>
-                        </div>
-                    `).join('');
+                            <span class="summary-name">${giftName}</span>
+                        `;
+                        summaryGrid.appendChild(itemDiv);
 
-                    summaryCard.classList.add('show');
-
-                    // Staggered animated pop-in for individual items
-                    const items = summaryGrid.querySelectorAll('.summary-item');
-                    items.forEach((elem, index) => {
                         setTimeout(() => {
-                            elem.classList.add('animate-in');
-                            playPopSound();
-                        }, index * 120);
+                            itemDiv.classList.add('animate-in');
+                        }, idx * 100);
                     });
 
+                    summaryCard.classList.add('show');
+                    statusText.textContent = "All gifts successfully revealed!";
                 }, 1200);
-            }, 1100);
+
+            }, 2000);
         }
     </script>
 </body>
