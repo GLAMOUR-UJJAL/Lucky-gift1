@@ -520,7 +520,6 @@
 
         function sendToGoogleSheet(gifts, billAmount) {
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzZtvulwMB89fFzErZncsQiNoRthw-8ZmEFg-UFPDa0vghSsq5X4o6l39-dkrfRuer8PA/exec';
-            if (scriptURL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') return;
 
             const payload = {
                 date: new Date().toISOString().split('T')[0],
