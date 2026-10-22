@@ -522,7 +522,7 @@
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzZtvulwMB89fFzErZncsQiNoRthw-8ZmEFg-UFPDa0vghSsq5X4o6l39-dkrfRuer8PA/exec';
 
             const payload = {
-                date: new Date().toISOString().split('T')[0],
+                date: new Date().toLocaleString(),
                 billAmount: billAmount,
                 gifts: gifts
             };
