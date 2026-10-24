@@ -448,12 +448,13 @@
             totalEligibleGifts = Math.floor(amount / 1000);
             wonGiftsList = [];
 
-            if (amount >= 1000 && amount <= 1700) {
+            if (amount >= 1000 && amount <= 1250) {
                 currentGiftPool = [
-                    { name: "MAGIC LED BULB", weight: 45 },
-                    { name: "WATER BOTTLE", weight: 45 },
+                    { name: "MAGIC LED BULB", weight: 40 },
+                    { name: "WATER BOTTLE", weight: 40 },
                     { name: "TRAY", weight: 20 },
-                    { name: "UMBRELLA", weight: 5 }
+                    { name: "GENTS BAG", weight: 5 },
+                    { name: "UMBRELLA", weight: 10 }
                 ];
             } else {
                 currentGiftPool = JSON.parse(JSON.stringify(defaultGifts));
