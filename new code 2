@@ -405,7 +405,7 @@
             { name: "UMBRELLA", weight: 15 },
             { name: "TRAY", weight: 20 },
             { name: "GENTS BAG", weight: 15 },
-            { name: "WALL CLOCK", weight: 9 },
+            { name: "WALL CLOCK", weight: 15 },
             { name: "WRIST WATCH", weight: 0 },
             { name: "FAN", weight: 0 }
         ];
@@ -448,18 +448,20 @@
             totalEligibleGifts = Math.floor(amount / 1000);
             wonGiftsList = [];
 
-            if (amount >= 1000 && amount <= 1700) {
+            if (amount >= 1000 && amount <= 1250) {
                 currentGiftPool = [
-                    { name: "MAGIC LED BULB", weight: 45 },
-                    { name: "WATER BOTTLE", weight: 45 },
+                    { name: "MAGIC LED BULB", weight: 35 },
+                    { name: "WATER BOTTLE", weight: 35 },
                     { name: "TRAY", weight: 20 },
-                    { name: "UMBRELLA", weight: 5 }
+                    { name: "GENTS BAG", weight: 10 },
+                    { name: "WALL CLOCK", weight: 15 },
+                    { name: "UMBRELLA", weight: 10 }
                 ];
             } else {
                 currentGiftPool = JSON.parse(JSON.stringify(defaultGifts));
                 const clockRef = currentGiftPool.find(g => g.name === "WALL CLOCK");
                 if (clockRef) {
-                    clockRef.weight = (amount <= 2999) ? 8 : 9;
+                    clockRef.weight = (amount <= 2999) ? 15 : 15;
                 }
             }
 
@@ -518,6 +520,23 @@
             }
         }
 
+        function sendToGoogleSheet(gifts, billAmount) {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzZtvulwMB89fFzErZncsQiNoRthw-8ZmEFg-UFPDa0vghSsq5X4o6l39-dkrfRuer8PA/exec';
+
+            const payload = {
+                date: new Date().toLocaleString(),
+                billAmount: billAmount,
+                gifts: gifts
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(err => console.log('Sheet Sync Error:', err));
+        }
+
         function openGift() {
             if (totalEligibleGifts === 0 || isOpening) return;
             isOpening = true;
@@ -560,6 +579,8 @@
                         }
                     });
                 }
+
+                sendToGoogleSheet(wonGiftsList, billAmountValue);
 
                 currentPrizeContent.innerHTML = `
                     <span class="badge-current">All Unlocked</span>
