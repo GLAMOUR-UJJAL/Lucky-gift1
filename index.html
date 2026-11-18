@@ -3,7 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mystery Gift Reveal</title>
+    <title>Mystery Gift Spin Wheel</title>
+    <script>
+        // Detect if the page was refreshed/reloaded and close or lock it immediately
+        (function() {
+            const navEntries = performance.getEntriesByType && performance.getEntriesByType('navigation');
+            const isReload = (navEntries && navEntries.length > 0 && navEntries[0].type === 'reload') ||
+                             (window.performance && window.performance.navigation && window.performance.navigation.type === 1);
+
+            if (isReload) {
+                window.close();
+                // Fallback if browser security prevents window.close() on non-script-opened tabs
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.body.innerHTML = `
+                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0a0b14;color:#ff416c;text-align:center;padding:20px;font-family:'Segoe UI',sans-serif;">
+                            <h1 style="font-size:2rem;margin-bottom:12px;">SESSION CLOSED</h1>
+                            <p style="color:#ffffff;font-size:1.1rem;">Page was refreshed. Your reward session has been closed and invalidated.</p>
+                        </div>
+                    `;
+                });
+            }
+        })();
+    </script>
     <style>
         * {
             box-sizing: border-box;
@@ -52,16 +73,29 @@
             justify-content: center;
         }
 
-        /* Bill Input Section */
-        .bill-input-card {
-            margin-bottom: 18px;
+        /* Unified Single Page Container Card */
+        .single-page-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: 16px;
+            padding: 20px 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bill-input-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
             align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
         }
 
-        .bill-input-card input {
+        .bill-input-group input {
             background: #25283d;
             border: 1px solid #414568;
             color: #fff;
@@ -74,7 +108,7 @@
             text-align: center;
         }
 
-        .bill-input-card button {
+        .bill-input-group button {
             background: linear-gradient(45deg, #ff416c, #ff4b2b);
             border: none;
             color: white;
@@ -89,199 +123,113 @@
             transition: transform 0.2s ease;
         }
 
-        .bill-input-card button:active {
+        .bill-input-group button:active {
             transform: scale(0.97);
         }
 
-        /* Treasure Chest Stage */
-        .chest-stage {
-            display: flex;
+        /* Wheel Stage */
+        .wheel-stage {
+            display: none;
             flex-direction: column;
             align-items: center;
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            width: 100%;
+            animation: fadeIn 0.4s ease forwards;
         }
 
-        .chest-stage.hide {
-            display: none;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .gift-container {
+        .wheel-wrapper {
             position: relative;
-            width: 180px;
-            height: 160px;
-            margin: 0 auto;
+            width: 280px;
+            height: 280px;
+            margin: 10px auto;
             cursor: pointer;
-            perspective: 800px;
             -webkit-tap-highlight-color: transparent;
-            flex-shrink: 0;
         }
 
-        .gift-container::after {
-            content: '';
+        .wheel-pointer {
             position: absolute;
-            bottom: 2px;
+            top: -14px;
             left: 50%;
             transform: translateX(-50%);
-            width: 160px;
-            height: 22px;
-            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 150, 255, 0.25) 40%, transparent 75%);
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 26px solid #ffd700;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.7));
+            z-index: 10;
+        }
+
+        canvas#giftWheel {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            z-index: 1;
+            border: 4px solid #ffd700;
+            box-shadow: 0 0 24px rgba(255, 215, 0, 0.35), 0 10px 25px rgba(0, 0, 0, 0.7);
+            transition: transform 1.6s cubic-bezier(0.15, 0.85, 0.2, 1);
+            display: block;
         }
 
-        .gift-box {
-            position: relative;
-            width: 160px;
-            height: 90px;
-            margin: 55px auto 0 auto;
-            background: repeating-linear-gradient(180deg, #1e3799 0px, #0c2461 18px, #0a192f 20px);
-            border-radius: 0 0 12px 12px;
-            border: 3px solid #08101e;
-            box-shadow: inset 0 -10px 25px rgba(0, 0, 0, 0.7), 0 14px 26px rgba(0, 0, 0, 0.6);
-            z-index: 2;
-        }
-
-        .gift-box::before {
-            content: '';
+        .wheel-center-btn {
             position: absolute;
-            top: 0;
-            left: 18px;
-            width: 16px;
-            height: 100%;
-            background: linear-gradient(90deg, #1b9cfc, #70a1ff 50%, #1e90ff);
-            border-left: 2px solid #0c2461;
-            border-right: 2px solid #0c2461;
-            box-shadow: 108px 0 0 0 #70a1ff;
-        }
-
-        .gift-box::after {
-            content: '';
-            position: absolute;
-            top: -10px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            width: 28px;
-            height: 32px;
-            background: radial-gradient(circle at 50% 30%, #a0c4ff 0%, #3a86ff 60%, #004e92 100%);
-            border: 2px solid #08101e;
-            border-radius: 6px 6px 14px 14px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.6);
-            z-index: 5;
-        }
-
-        .gift-lid {
-            position: absolute;
-            top: 15px;
-            left: 5px;
-            width: 170px;
-            height: 48px;
-            background: repeating-linear-gradient(180deg, #2541b2 0px, #102a78 16px, #0a192f 18px);
-            border-radius: 34px 34px 6px 6px;
-            border: 3px solid #08101e;
-            box-shadow: inset 0 6px 15px rgba(255, 255, 255, 0.2), 0 8px 18px rgba(0, 0, 0, 0.5);
-            z-index: 4;
-            transform-origin: center top;
-            transition: transform 0.8s cubic-bezier(0.2, 0.85, 0.3, 1.25);
-            transform-style: preserve-3d;
-        }
-
-        .gift-lid::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 18px;
-            width: 18px;
-            height: 100%;
-            background: linear-gradient(90deg, #1b9cfc, #70a1ff 50%, #1e90ff);
-            border-left: 2px solid #0c2461;
-            border-right: 2px solid #0c2461;
-            border-radius: 18px 18px 0 0;
-            box-shadow: 110px 0 0 0 #70a1ff;
-        }
-
-        .gift-container.shake .gift-box {
-            animation: chestRattle 0.2s ease-in-out infinite;
-        }
-
-        .gift-container.shake .gift-lid {
-            animation: lidRattle 0.2s ease-in-out infinite;
-        }
-
-        .gift-container.opened .gift-lid {
-            transform: translateY(-12px) rotateX(-115deg);
-        }
-
-        @keyframes chestRattle {
-            0%, 100% { transform: translateX(0) rotate(0deg); }
-            20% { transform: translateX(-5px) rotate(-1.5deg); }
-            40% { transform: translateX(5px) rotate(1.5deg); }
-            60% { transform: translateX(-3px) rotate(-1deg); }
-            80% { transform: translateX(3px) rotate(1deg); }
-        }
-
-        @keyframes lidRattle {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            30% { transform: translateY(-4px) rotate(-2deg); }
-            70% { transform: translateY(-2px) rotate(2deg); }
-        }
-
-        /* Single Live Gift Reveal */
-        .single-reveal {
-            margin-top: 20px;
-            opacity: 0;
-            transform: translateY(10px) scale(0.9);
-            transition: all 0.1s cubic-bezier(0.2, 0.9, 0.3, 1.2);
-            pointer-events: none;
-            min-height: 52px;
-        }
-
-        .single-reveal.show {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .current-prize-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
-            border: 1px solid rgba(255, 215, 0, 0.4);
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: 800;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ff416c, #ff4b2b);
+            border: 3px solid #ffd700;
             color: #fff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            font-weight: 900;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            pointer-events: none;
         }
 
-        .badge-current {
-            background: linear-gradient(45deg, #ffd700, #ff9900);
-            color: #201400;
-            font-size: 0.75rem;
+        /* Multi-Spin Live Status Box */
+        .spin-progress-box {
+            margin-top: 15px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .spin-counter-text {
+            font-size: 0.95rem;
+            color: #ffd700;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .current-won-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #00ffd0, #009432);
+            color: #08101e;
             font-weight: 900;
-            padding: 3px 8px;
-            border-radius: 12px;
-            text-transform: uppercase;
+            font-size: 1rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 255, 208, 0.3);
         }
 
         /* Final Summary View */
-        .summary-card {
+        .summary-section {
             display: none;
-            opacity: 0;
-            transform: scale(0.92);
-            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2);
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 215, 0, 0.25);
-            border-radius: 16px;
-            padding: 20px 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
             width: 100%;
-        }
-
-        .summary-card.show {
-            display: block;
-            opacity: 1;
-            transform: scale(1);
+            animation: fadeIn 0.5s ease forwards;
         }
 
         .summary-title {
@@ -289,15 +237,17 @@
             color: #00ffd0;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-shadow: 0 0 12px rgba(0, 255, 208, 0.5);
         }
 
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
+            max-height: 220px;
+            overflow-y: auto;
         }
 
         .summary-item {
@@ -341,7 +291,7 @@
             color: #ff0000;
             animation: blinker 1s linear infinite;
             margin-top: 15px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             letter-spacing: 0.5px;
         }
 
@@ -356,46 +306,58 @@
         <h1>GLAMOUR'S REWARD SYSTEM</h1>
         <p class="subtitle" id="status-text">Enter bill amount to unlock gifts (1 Gift per ₹1000)</p>
 
-        <!-- Bill Amount Input -->
-        <div class="bill-input-card" id="billInputSection">
-            <input type="number" id="billAmount" placeholder="Enter Bill Amount (₹)" min="1000" inputmode="numeric">
-            <button onclick="setBillAmount()">Unlock Gifts</button>
-        </div>
-
-        <!-- Single Chest Stage -->
-        <div class="chest-stage hide" id="chestStage">
-            <div class="gift-container" id="giftContainer" onclick="openGift()">
-                <div class="gift-lid" id="giftLid"></div>
-                <div class="gift-box"></div>
+        <!-- Unified Single Page Container Card -->
+        <div class="single-page-card">
+            
+            <!-- Bill Amount Input View -->
+            <div class="bill-input-group" id="billInputSection">
+                <input type="number" id="billAmount" placeholder="Enter Bill Amount (₹)" min="1000" inputmode="numeric">
+                <button onclick="initializeRewards()">Start Spin & Unlock</button>
             </div>
 
-            <div class="single-reveal" id="singleReveal">
-                <div class="current-prize-pill" id="currentPrizeContent"></div>
-            </div>
-        </div>
+            <!-- Spin Wheel Stage View -->
+            <div class="wheel-stage" id="wheelStage">
+                <div class="wheel-wrapper" id="wheelWrapper" onclick="triggerMultiSpinSequence()">
+                    <div class="wheel-pointer"></div>
+                    <canvas id="giftWheel" width="300" height="300"></canvas>
+                    <div class="wheel-center-btn" id="wheelCenterText">SPIN</div>
+                </div>
 
-        <!-- Final Summary View -->
-        <div class="summary-card" id="summaryCard">
-            <p class="summary-title">🎉 Your Won Rewards 🎉</p>
-            <div class="summary-grid" id="summaryGrid"></div>
+                <div class="spin-progress-box">
+                    <div class="spin-counter-text" id="spinCounterText">Ready to spin!</div>
+                    <div class="current-won-badge" id="currentWonBadge">Tap Wheel to Begin</div>
+                </div>
+            </div>
+
+            <!-- Final Summary View -->
+            <div class="summary-section" id="summarySection">
+                <p class="summary-title">🎉 Your Won Rewards 🎉</p>
+                <div class="summary-grid" id="summaryGrid"></div>
+            </div>
+
         </div>
 
         <!-- Blinking Warning Caption -->
-        <div class="blink-warning">REFRESHING THE PAGE WILL INVALIDATE YOUR GIFT</div>
+        <div class="blink-warning">REFRESHING THE PAGE WILL CLOSE AND INVALIDATE YOUR GIFT</div>
     </div>
 
     <script>
-        // Restrict page refresh/reload attempts (blocks F5, Ctrl+R, Cmd+R, and warns on unload)
+        function closeOrLockPage() {
+            window.close();
+            document.body.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0a0b14;color:#ff416c;text-align:center;padding:20px;font-family:'Segoe UI',sans-serif;">
+                    <h1 style="font-size:2rem;margin-bottom:12px;">SESSION CLOSED</h1>
+                    <p style="color:#ffffff;font-size:1.1rem;">Page refresh detected. Your reward session has been closed and invalidated.</p>
+                </div>
+            `;
+        }
+
+        // Immediately close/lock page if refresh shortcut keys (F5, Ctrl+R, Cmd+R) are pressed
         window.addEventListener('keydown', function(e) {
             if (e.key === 'F5' || (e.ctrlKey && e.key.toLowerCase() === 'r') || (e.metaKey && e.key.toLowerCase() === 'r')) {
                 e.preventDefault();
-                alert("Page refresh is restricted on this rewards page!");
+                closeOrLockPage();
             }
-        });
-
-        window.addEventListener('beforeunload', function(e) {
-            e.preventDefault();
-            e.returnValue = '';
         });
 
         const defaultGifts = [
@@ -417,10 +379,57 @@
         let currentGiftPool = [];
         let totalEligibleGifts = 0;
         let wonGiftsList = [];
-        let isOpening = false;
         let billAmountValue = 0;
+        let wheelRotation = 0;
+        let isSpinning = false;
+        let currentSpinIndex = 0;
 
-        function setBillAmount() {
+        function drawWheel(items) {
+            const canvas = document.getElementById('giftWheel');
+            const ctx = canvas.getContext('2d');
+            const numSegments = items.length;
+            const arc = (2 * Math.PI) / numSegments;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = centerX - 4;
+
+            const colors = [
+                '#ff416c', '#1e3799', '#ff9900', '#0c2461',
+                '#e84393', '#009432', '#6f1e51', '#0652dd',
+                '#d63031', '#1b1464', '#f79f1f'
+            ];
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            items.forEach((gift, i) => {
+                const startAngle = i * arc - Math.PI / 2;
+                const endAngle = startAngle + arc;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#0a0b14';
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + arc / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px "Segoe UI", sans-serif';
+                ctx.shadowColor = 'rgba(0,0,0,0.85)';
+                ctx.shadowBlur = 4;
+                ctx.fillText(gift.name, radius - 14, 4);
+                ctx.restore();
+            });
+        }
+
+        function initializeRewards() {
             const billInput = document.getElementById('billAmount');
             const amount = parseFloat(billInput.value);
             const statusText = document.getElementById('status-text');
@@ -449,6 +458,7 @@
             billAmountValue = amount;
             totalEligibleGifts = Math.floor(amount / 1000);
             wonGiftsList = [];
+            currentSpinIndex = 0;
 
             if (amount >= 1000 && amount <= 1250) {
                 currentGiftPool = [
@@ -467,10 +477,35 @@
                 }
             }
 
+            for (let i = 0; i < totalEligibleGifts; i++) {
+                wonGiftsList.push(getWeightedGift());
+            }
+
+            if (billAmountValue > 4000) {
+                if (!wonGiftsList.includes("WALL CLOCK")) {
+                    const replaceIdx = Math.floor(Math.random() * wonGiftsList.length);
+                    wonGiftsList[replaceIdx] = "WALL CLOCK";
+                }
+            }
+
+            if (billAmountValue > 8000) {
+                ["WALL CLOCK", "GENTS BAG"].forEach(item => {
+                    let count = wonGiftsList.filter(g => g === item).length;
+                    while (count < 2 && wonGiftsList.length > 0) {
+                        const replaceIdx = Math.floor(Math.random() * wonGiftsList.length);
+                        wonGiftsList[replaceIdx] = item;
+                        count = wonGiftsList.filter(g => g === item).length;
+                    }
+                });
+            }
+
+            drawWheel(currentGiftPool);
+
             document.getElementById('billInputSection').style.display = 'none';
-            document.getElementById('chestStage').classList.remove('hide');
-            statusText.textContent = `Unlocked ${totalEligibleGifts} gift(s)! Tap chest to reveal all.`;
-            document.getElementById('giftContainer').classList.remove('disabled');
+            document.getElementById('wheelStage').style.display = 'flex';
+            statusText.textContent = `Unlocked ${totalEligibleGifts} Gift(s)! Tap the wheel once to start spinning.`;
+            document.getElementById('spinCounterText').textContent = `Spin 1 of ${totalEligibleGifts}`;
+            document.getElementById('currentWonBadge').textContent = 'Ready to spin';
         }
 
         function getWeightedGift() {
@@ -499,27 +534,29 @@
             return selectedItemName;
         }
 
-        function playRevealSound() {
+        function playWheelSpinTickSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                
-                oscillator.type = 'triangle';
-                oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                oscillator.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6
-                
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.6);
-            } catch (e) {
-                // AudioContext not allowed or supported without user interaction
-            }
+                for (let i = 0; i < 14; i++) {
+                    setTimeout(() => {
+                        try {
+                            const osc = audioCtx.createOscillator();
+                            const gain = audioCtx.createGain();
+                            osc.type = 'square';
+                            osc.frequency.setValueAtTime(600 + Math.random() * 300, audioCtx.currentTime);
+                            
+                            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+                            
+                            osc.connect(gain);
+                            gain.connect(audioCtx.destination);
+                            
+                            osc.start();
+                            osc.stop(audioCtx.currentTime + 0.04);
+                        } catch(e){}
+                    }, i * 90);
+                }
+            } catch (e) {}
         }
 
         function sendToGoogleSheet(gifts, billAmount) {
@@ -539,73 +576,73 @@
             }).catch(err => console.log('Sheet Sync Error:', err));
         }
 
-        function openGift() {
-            if (totalEligibleGifts === 0 || isOpening) return;
-            isOpening = true;
+        function triggerMultiSpinSequence() {
+            if (isSpinning || currentSpinIndex >= totalEligibleGifts) return;
+            isSpinning = true;
 
-            const container = document.getElementById('giftContainer');
+            const wheelCanvas = document.getElementById('giftWheel');
             const statusText = document.getElementById('status-text');
-            const singleReveal = document.getElementById('singleReveal');
-            const currentPrizeContent = document.getElementById('currentPrizeContent');
+            const spinCounterText = document.getElementById('spinCounterText');
+            const currentWonBadge = document.getElementById('currentWonBadge');
+            const wheelWrapper = document.getElementById('wheelWrapper');
 
-            container.classList.remove('opened');
-            singleReveal.classList.remove('show');
+            wheelWrapper.classList.add('disabled');
 
-            container.classList.add('shake');
-            statusText.textContent = "Unlocking all your mystery gifts...";
+            function executeSingleSpin() {
+                if (currentSpinIndex >= totalEligibleGifts) {
+                    sendToGoogleSheet(wonGiftsList, billAmountValue);
+                    statusText.textContent = "All spins completed successfully!";
+                    
+                    setTimeout(() => {
+                        document.getElementById('wheelStage').style.display = 'none';
+                        const summarySection = document.getElementById('summarySection');
+                        const summaryGrid = document.getElementById('summaryGrid');
 
-            setTimeout(() => {
-                container.classList.remove('shake');
-                container.classList.add('opened');
-                playRevealSound();
+                        summaryGrid.innerHTML = wonGiftsList.map((item, idx) => `
+                            <div class="summary-item">
+                                <span class="summary-badge">#${idx + 1}</span>
+                                <span class="summary-name">${item}</span>
+                            </div>
+                        `).join('');
 
-                wonGiftsList = [];
-                for (let i = 0; i < totalEligibleGifts; i++) {
-                    wonGiftsList.push(getWeightedGift());
+                        summarySection.style.display = 'block';
+                    }, 800);
+                    return;
                 }
 
-                if (billAmountValue > 4000) {
-                    if (!wonGiftsList.includes("WALL CLOCK")) {
-                        const replaceIdx = Math.floor(Math.random() * wonGiftsList.length);
-                        wonGiftsList[replaceIdx] = "WALL CLOCK";
-                    }
-                }
+                const targetGiftName = wonGiftsList[currentSpinIndex];
+                const numSegments = currentGiftPool.length;
+                const segmentDeg = 360 / numSegments;
+                const targetIndex = currentGiftPool.findIndex(g => g.name === targetGiftName);
+                const sliceCenterAngle = (targetIndex >= 0 ? targetIndex : 0) * segmentDeg + (segmentDeg / 2);
+                const targetLandingMod = (360 - sliceCenterAngle) % 360;
+                const currentMod = wheelRotation % 360;
+                const extraAngle = (targetLandingMod - currentMod + 360) % 360;
 
-                if (billAmountValue > 8000) {
-                    ["WALL CLOCK", "GENTS BAG"].forEach(item => {
-                        let count = wonGiftsList.filter(g => g === item).length;
-                        while (count < 2 && wonGiftsList.length > 0) {
-                            const replaceIdx = Math.floor(Math.random() * wonGiftsList.length);
-                            wonGiftsList[replaceIdx] = item;
-                            count = wonGiftsList.filter(g => g === item).length;
-                        }
-                    });
-                }
+                wheelRotation += (360 * 3) + extraAngle;
+                wheelCanvas.style.transform = `rotate(${wheelRotation}deg)`;
 
-                sendToGoogleSheet(wonGiftsList, billAmountValue);
+                playWheelSpinTickSound();
 
-                currentPrizeContent.innerHTML = `
-                    <span class="badge-current">All Unlocked</span>
-                    <span>${totalEligibleGifts} Gift(s) Ready!</span>
-                `;
-                singleReveal.classList.add('show');
-                statusText.textContent = "All gifts revealed! Here is your complete summary:";
+                statusText.textContent = `Spinning for Gift #${currentSpinIndex + 1} of ${totalEligibleGifts}...`;
+                spinCounterText.textContent = `Spin ${currentSpinIndex + 1} of ${totalEligibleGifts}`;
+                currentWonBadge.textContent = "Spinning...";
 
                 setTimeout(() => {
-                    document.getElementById('chestStage').classList.add('hide');
-                    const summaryCard = document.getElementById('summaryCard');
-                    const summaryGrid = document.getElementById('summaryGrid');
+                    currentWonBadge.textContent = `Won: ${targetGiftName}`;
+                    currentSpinIndex++;
 
-                    summaryGrid.innerHTML = wonGiftsList.map((item, idx) => `
-                        <div class="summary-item">
-                            <span class="summary-badge">#${idx + 1}</span>
-                            <span class="summary-name">${item}</span>
-                        </div>
-                    `).join('');
+                    if (currentSpinIndex < totalEligibleGifts) {
+                        setTimeout(() => {
+                            executeSingleSpin();
+                        }, 600);
+                    } else {
+                        executeSingleSpin();
+                    }
+                }, 1600);
+            }
 
-                    summaryCard.classList.add('show');
-                }, 1200);
-            }, 1100);
+            executeSingleSpin();
         }
     </script>
 </body>
